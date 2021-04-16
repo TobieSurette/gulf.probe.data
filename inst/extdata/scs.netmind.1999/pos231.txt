@@ -1,0 +1,10 @@
+FileName: C:\LOGFILES\POS231.TXT
+Local Time: Tue Aug 24 08:38:32 1999
+
+Ship:  Trip:  Tow: 09
+Comments: POS119  ZONE 19 CAPE ST LAWRENCE
+ Date    Time     Latitude       Longitude    Speed Head-Bottom Head-Foot Door
+990824  114052  47   8.3000 N  60  34.2600 W   4.9    2.1      1.6      7.7   
+990824  114053  47   8.3000 N  60  34.2600 W   4.9    2.1      1.6      7.7   
+990824  114054  47   8.3000 N  60  34.2600 W   4.8    2.1      1.6      7.7   
+990824  114055  47   8.3000 N  60  34.2600 W   4.8    2.1      1.6      7.7   
