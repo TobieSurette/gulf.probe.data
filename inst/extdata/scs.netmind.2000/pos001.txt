@@ -1,0 +1,6 @@
+FileName: C:\WINDOWS\DESKTOP\MARCEL~1\POS001.TXT
+Local Time: Tue Aug 01 10:26:19 2000
+
+Ship: Den C Martin Trip: August 01, 00 Tow: POS001
+Comments: Essai Baie des Chaleurs
+ Date    Time     Latitude       Longitude    Speed    Primary  Secondary DoorSpread      Depth 
