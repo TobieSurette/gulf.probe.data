@@ -1,0 +1,11 @@
+Package: gulf.trawl.data
+Type: Package
+Title: Southern Gulf of St Lawrence Trawl Data Access
+Version: 0.1.0
+Depends: gulf.data
+Authors@R: as.person(c("Tobie Surette <Tobie.Surette@dfo-mpo.gc.ca> [aut, cre]"))
+Description: Functions for access and manipulation of Southern Gulf of Saint Lawrence trawl survey probe data.
+License: GPL
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
