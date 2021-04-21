@@ -45,6 +45,7 @@ locate.netmind.default <- function(x, year, tow.id, remove = c("reject", "test",
    ix <- union(grep("pos", tolower(files)), grep("s[0-9][0-9]", tolower(files)))
    ix <- union(ix, grep("sta", tolower(files)))
    ix <- union(ix, grep(".csv$", tolower(files)))
+   ix <- union(ix, grep(".txt$", tolower(files)))
    files <- files[ix]
    
    # Target year:

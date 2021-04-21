@@ -30,7 +30,7 @@ read.netmind <- function(x, file, offset = 0, repeats = FALSE, ...){
       for (i in 1:length(file)){
          cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
          tmp <- read.netmind(file[i])
-         if (nrow(tmp) > 0) tmp <- expand(tmp)  # Attach attribute information as appended columns.
+         if (nrow(tmp) > 0) tmp <- gulf.utils::expand(tmp)  # Attach attribute information as appended columns.
          if (!is.null(x) & nrow(tmp) > 0){
             # Create NA-valued columns if new variables appear:
             index <- setdiff(names(x), names(tmp))
@@ -52,14 +52,25 @@ read.netmind <- function(x, file, offset = 0, repeats = FALSE, ...){
    warnings <- getOption("warn")
    options(warn = -1)
    y <- read.table(file = file, quote = "",  colClasses = "character", sep = "\n", blank.lines.skip = FALSE)[[1]]
+   
+   # Replace problem characters:
+   y <- gsub('\xee', "i", y)  
+   y <- gsub('\xfb', "u", y)  
+   y <- gsub('\xce', "I", y) 
+   y <- gsub('\xc9', "E", y) 
+   y <- gsub('\xf4', "a", y) 
+   y <- gsub('\xe0', "a", y) 
+   y <- gsub('\xe9', "e", y)
+   y <- gsub('\xe8', "e", y)  
+   y <- gsub('\xeb', " ", y)  
+   y <- gsub('\"+', " ", y)
+   
+   # Fix blanks and missing data lines:
    y <- tolower(gulf.utils::deblank(y))
    y <- y[y != ""]
    options(warn = warnings)
 
-   #y <- gsub('\xeb', " ", y)  
-   #y <- gsub('\"+', " ", y)
-      
-   comment <- gsub("comment[s: ]*", "", y[grep("comment", y)])
+   comment <- gsub("comment[s]*[: ]*", "", y[grep("comment", y)])
    tow <- strsplit(y[grep("tow", y)], "tow")[[1]]
    tow <- tow[length(tow)]
   
@@ -90,8 +101,8 @@ read.netmind <- function(x, file, offset = 0, repeats = FALSE, ...){
    date <- unlist(lapply(strsplit(y, " "), function(x) x[1]))
    prefix <- ""
    if (nchar(date[1]) == 6){
-      if (as.numeric(substr(date[1], 1, 2)) > 90) prefix <- "19"
-      if (as.numeric(substr(date[1], 1, 2)) < 10) prefix <- "20"
+      if (as.numeric(substr(date[1], 1, 2)) > 80) prefix <- "19"
+      if (as.numeric(substr(date[1], 1, 2)) < 50) prefix <- "20"
       date = paste0(prefix, substr(date, 1, 2), "-", substr(date, 3, 4), "-", substr(date, 5, 6))
    }else{
       date = paste0(substr(date, 1, 4), "-", substr(date, 5, 6), "-", substr(date, 7, 8))

@@ -4,6 +4,3 @@ Local Time: Sun Aug 28 07:47:55 2005
 Ship: Marco Michel Trip: 04 Tow: gp279
 Comments: zone 12
  Date    Time     Latitude       Longitude    Speed    Primary  Secondary DoorSpread WingSpread      Depth 
-
-
-Fichier bidon.  Pas bon contact à l'arrière du Netmind.
