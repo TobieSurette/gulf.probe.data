@@ -1,0 +1,6 @@
+FileName: C:\2005NE~1\GP227.TXT
+Local Time: Tue Sep 20 11:27:14 2005
+
+Ship: Marco Michel Trip: 09 Tow: gp227
+Comments: zone 12
+ Date    Time     Latitude       Longitude    Speed    Primary  Secondary DoorSpread WingSpread      Depth 
