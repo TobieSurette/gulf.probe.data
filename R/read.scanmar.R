@@ -23,7 +23,7 @@ read.scanmar <- function(x, file, offset = 0, repeats = FALSE, ...){
    if (missing(file)) file <- locate.scanmar(x, ...)
    if (length(file) == 0) return(NULL)
    
-   # Read multiple netmind files and concatenate them:
+   # Read multiple scanmar files and concatenate them:
    if (length(file) == 0) return(NULL)
    if (length(file) > 1){
       x <- NULL
@@ -52,8 +52,11 @@ read.scanmar <- function(x, file, offset = 0, repeats = FALSE, ...){
       return(x)
    }
    
-   
-   #file <- "/Library/Frameworks/R.framework/Versions/4.0/Resources/library/gulf.trawl.data/extdata/scs.scanmar.1995/POS114.SCD"
+   # Load CSV file:
+   if (length(grep("[.]csv$", file)) > 0){
+      v <- read.csv(file, header = TRUE, stringsAsFactors = FALSE)
+      return(v)
+   }
    
    # Read and parse header info:
    warnings <- getOption("warn")
@@ -136,6 +139,13 @@ read.scanmar <- function(x, file, offset = 0, repeats = FALSE, ...){
 
       # Set header attributes:
       header(v) <- header
+   }
+   
+   # Modify time by specified offset:
+   if (offset != 0){
+      t <- time(v) +  offset * 60
+      v$date <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[1]))
+      v$time <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[2]))
    }
    
    # Create 'scanmar' object:
