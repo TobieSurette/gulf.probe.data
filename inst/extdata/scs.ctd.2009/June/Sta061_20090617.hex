@@ -1,0 +1,84 @@
+* Sea-Bird SBE19plus Data File:
+* FileName = C:\CTD\2009\Area19\Sta061_20090617.hex
+* Software Version 1.50
+* Temperature SN =  5272
+* Conductivity SN =  5272
+* System UpLoad Time = Jun 25 2009 11:46:04
+** Ship: Marco Michel
+** Cruise: GLFSCTSD062009
+** Chief_Scientist: Marcel Hebert
+** Area_of_Operation: Snow Crab Area 19
+** Station: gp261
+** Latitude: N46 42.675
+** Longitude: W61 22.773
+** Sounding: 69
+** station061
+* ds
+* SeacatPlus V 1.6b  SERIAL NO. 5272    25 Jun 2009  14:45:27
+* vbatt = 12.8, vlith =  8.7, ioper =  61.0 ma, ipump =  63.6 ma, 
+* iext01 =  40.3 ma
+* 
+* status = not logging
+* number of scans to average = 1
+* samples = 33365, free = 525875, casts = 60
+* mode = profile, minimum cond freq = 3040, pump delay = 60 sec
+* autorun = no, ignore magnetic switch = no
+* battery type = alkaline, battery cutoff =  7.3 volts
+* pressure sensor = strain gauge, range = 870.0
+* SBE 38 = no, Gas Tension Device = no
+* Ext Volt 0 = yes, Ext Volt 1 = yes, Ext Volt 2 = no, Ext Volt 3 = no
+* echo commands = yes
+* output format = raw HEX 
+* S>
+* 
+* SeacatPlus V 1.6b  SERIAL NO. 5272    25 Jun 2009  14:45:41
+* temperature:  18-nov-07
+*     TA0 = 1.236271e-03
+*     TA1 = 2.611871e-04
+*     TA2 = -1.496741e-07
+*     TA3 = 1.472118e-07
+*     TOFFSET = 0.000000e+00
+* conductivity:  18-nov-07
+*     G = -1.026135e+00
+*     H = 1.612219e-01
+*     I = -1.133891e-03
+*     J = 1.195391e-04
+*     CF0 = 2.539703e+03
+*     CPCOR = -9.570000e-08
+*     CTCOR = 3.250000e-06
+*     CSLOPE = 1.000000e+00
+* pressure S/N = 2632713, range = 870 psia:  07-nov-07
+*     PA0 = 8.609087e-01
+*     PA1 = 2.551814e-03
+*     PA2 = 1.937600e-11
+*     PTCA0 = 5.203997e+05
+*     PTCA1 = 3.141972e+01
+*     PTCA2 = -7.338000e-01
+*     PTCB0 = 2.614925e+01
+*     PTCB1 = -5.500000e-04
+*     PTCB2 = 0.000000e+00
+*     PTEMPA0 = -5.757838e+01
+*     PTEMPA1 = 5.371419e+01
+*     PTEMPA2 = -3.320128e-01
+*     POFFSET = 0.000000e+00
+* volt 0: offset = -4.718737e-02, slope = 1.245696e+00
+* volt 1: offset = -4.715579e-02, slope = 1.245244e+00
+* volt 2: offset = -4.730632e-02, slope = 1.244906e+00
+* volt 3: offset = -4.719895e-02, slope = 1.245489e+00
+*     EXTFREQSF = 1.000015e+00 * dh
+* cast  51 17 Jun 2009 15:00:10 samples 30775 to 30787, avg = 1, stop = stop cmd 
+* S> 
+*END*
+0746F109FC71080782422B0712FC09
+0747DA0C10B30807AD422C071BFC24
+07453512A87908084A422C0716FBE5
+073E82137A4F0808E3422C0717FC22
+0739F8145F91080975422E04DB36A9
+07377D148C51080A25422F04DA36A8
+07364114958B080AE4422F04DB36AA
+07356B14931C080B5D422D04DA36A3
+07356F148D32080B7B422F04D50A31
+073649148D79080B79422D064A0A2E
+07370D148C1F080B68422F06480A32
+07378B148BAD080B514230063F0A30
+0737D5148124080B3A423006490A30
