@@ -1,6 +1,6 @@
-#' Locate Scanmar Trawl Acoustic Data
+#' Locate Netmind Trawl Acoustic Data
 #' 
-#' @description Functions to locate Scanmar probe data from different projects and surveys.
+#' @description Functions to locate Netmind probe data from different projects and surveys.
 #' 
 #' @param x Data object.
 #' @param year Study or survey year.
@@ -10,22 +10,22 @@
 #' 
 #' @examples 
 #' # Global searches:
-#' locate.scanmar()     # Find all available Scanmar data files.
-#' locate.scanmar(1990) # Find Scanmar data files for the 1990 snow crab survey.
-#' locate.scanmar(1990:1994) # Find Scanmar data files for the 1990-1994 snow crab survey.
+#' locate.netmind()     # Find all available Netmind data files.
+#' locate.netmind(1990) # Find Netmind data files for the 1990 snow crab survey.
+#' locate.netmind(1990:1994) # Find Netmind data files for the 1990-1994 snow crab survey.
 #' 
 #' # Specific searches:
-#' locate.scanmar(1990, tow.id = 100)
-#' locate.scanmar(1990, tow.id = "100")
-#' locate.scanmar(1990, tow.id = "S90100")
-#' locate.scanmar(tow.id = "S90100")
+#' locate.netmind(1990, tow.id = 100)
+#' locate.netmind(1990, tow.id = "100")
+#' locate.netmind(1990, tow.id = "S90100")
+#' locate.netmind(tow.id = "S90100")
 
-#' @export locate.scanmar
-locate.scanmar <- function(x, ...) UseMethod("locate.scanmar")
+#' @export locate.netmind
+locate.netmind <- function(x, ...) UseMethod("locate.netmind")
 
-#' @describeIn locate.scanmar Default method for locating Scanmar acoustic data files.
-#' @rawNamespace S3method(locate.scanmar,default)
-locate.scanmar.default <- function(x, year, tow.id, remove = c("reject", "test", "invalid"), ...){
+#' @describeIn locate.netmind Default method for locating Netmind acoustic data files.
+#' @rawNamespace S3method(locate.netmind,default)
+locate.netmind.default <- function(x, year, tow.id, remove = c("reject", "test", "invalid"), ...){
    # Parse 'x' argument:
    if (!missing(x)){
       if (is.numeric(x)) year <- x
@@ -36,7 +36,7 @@ locate.scanmar.default <- function(x, year, tow.id, remove = c("reject", "test",
    }
    
    # Load set of file names:
-   files <- locate(package = "gulf.trawl.data", keywords = c("scanmar"), ...)
+   files <- locate(package = "gulf.trawl.data", keywords = c("netmind"), ...)
    ix <- unique(c(grep("[.]txt", tolower(files)), grep("[.]scd", tolower(files)), grep("[.]csv", tolower(files))))
    files <- files[ix]
 
@@ -45,6 +45,7 @@ locate.scanmar.default <- function(x, year, tow.id, remove = c("reject", "test",
    ix <- union(grep("pos", tolower(files)), grep("s[0-9][0-9]", tolower(files)))
    ix <- union(ix, grep("sta", tolower(files)))
    ix <- union(ix, grep(".csv$", tolower(files)))
+   ix <- union(ix, grep(".txt$", tolower(files)))
    files <- files[ix]
    
    # Target year:

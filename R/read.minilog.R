@@ -17,6 +17,8 @@
 #' @examples 
 #' # Read snow crab survey Minilog data from 1997:
 #' x <- read.minilog(1997)
+#' 
+#' x <- read.minilog(tow.id = 300)
 
 #' @export read.minilog
 read.minilog <- function(x, ...) UseMethod("read.minilog")
@@ -93,10 +95,18 @@ read.minilog.default <- function(x, file, offset = 0, verbose = TRUE, ...){
    
    # Fix odd characters:
    y <- gsub('\xeb', " ", y)  
-   y <- gsub('\"+', " ", y)
    y <- gsub('\xf8C', " ", y)
    y <- gsub('\xb0C', " ", y)
-
+   y <- gsub('\xee', "i", y)  
+   y <- gsub('\xfb', "u", y)  
+   y <- gsub('\xce', "I", y) 
+   y <- gsub('\xc9', "E", y) 
+   y <- gsub('\xf4', "a", y) 
+   y <- gsub('\xe0', "a", y) 
+   y <- gsub('\xe9', "e", y)
+   y <- gsub('\xe8', "e", y)  
+   y <- gsub('\"+', " ", y)
+   
    # Read minilog data:
    for (i in c(",", " ", "\t")){
       if (i == ","){
@@ -152,13 +162,9 @@ read.minilog.default <- function(x, file, offset = 0, verbose = TRUE, ...){
    
    # Modify time by specified offset:
    if (offset != 0){
-      t <- as.matrix(as.POSIXlt(time(x) + offset * 60))
-      x$year   <- t[, "year"] + 1900
-      x$month  <- t[, "mon"] + 1
-      x$day    <- t[, "mday"]
-      x$hour   <- t[, "hour"]
-      x$minute <- t[, "min"]
-      x$second <- t[, "sec"]
+      t <- time(v) +  offset * 60
+      v$date <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[1]))
+      v$time <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[2]))
    }
 
    # Convert to minilog object:
