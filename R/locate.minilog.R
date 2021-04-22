@@ -1,9 +1,11 @@
-#' Locate Minilog Trawl Acoustic Data
+#' @title Locate Minilog Probe Data
 #' 
 #' @description Functions to locate Minilog probe data from different projects and surveys.
 #' 
 #' @param x Data object.
+#' @param path Data search path.
 #' @param year Study or survey year.
+#' @param project Study project identifier. See \code{\link[gulf.metadata]{project}}.
 #' @param remove Character string vector specifying a list of key words, which if found in the data path or file name, 
 #'               are removed from the search results.
 #' @param tow.id Character string(s) specifying a snow crab survey tow identifier(s) (e.g. \sQuote{GP354F}).
@@ -11,39 +13,60 @@
 #' @examples 
 #' # Global searches:
 #' locate.minilog()     # Find all available Minilog data files.
-#' locate.minilog(1990) # Find Minilog data files for the 1990 snow crab survey.
-#' locate.minilog(1990:1994) # Find Minilog data files for the 1990-1994 snow crab survey.
-#' 
-#' # Specific searches:
-#' locate.minilog(1990, tow.id = 100)
-#' locate.minilog(1990, tow.id = "100")
-#' locate.minilog(1990, tow.id = "S90100")
-#' locate.minilog(tow.id = "S90100")
+#' locate.minilog(1997) # Find Minilog data files for the 1997 snow crab survey.
+#' locate.minilog(1997:1999) # Find Minilog data files for the 1997-1997 snow crab survey.
 
 #' @export locate.minilog
 locate.minilog <- function(x, ...) UseMethod("locate.minilog")
 
-#' @describeIn locate.minilog Default method for locating Minilog acoustic data files.
+#' @describeIn locate.minilog Default method for locating Minilog probe data files.
 #' @rawNamespace S3method(locate.minilog,default)
-locate.minilog.default <- function(x, year, tow.id, remove = c("reject", "test", "invalid"), ...){
+locate.minilog.default <- function(x, project = "scs", remove, ...){
    # Parse 'x' argument:
-   if (!missing(x)){
-      if (is.numeric(x)) year <- x
-      if (is.character(x)){
-         if (any(file.exists(x))) return(x[file.exists(x)])
-         tow.id <- x
-      }
-   }
+   if (!missing(x)) if (is.character(x)) if (any(file.exists(x))) return(x[file.exists(x)])
+
+   # Locate Minilog files by project:
+   project <- project(project)
+   if (project == "scs")  files <- locate.minilog.scs(x, remove = c("reject", "test", "invalid"), ...)
+   if (project == "alsi") files <- locate.minilog.alsi(x, ...)  
    
-   # Load set of file names:
+   # Remove files:
+   if (!missing(remove)){
+      if (length(remove) == 1) if (remove == FALSE) remove <- NULL
+      if (!missing(remove)){
+         remove <- remove[remove != "" & !is.na(remove)]
+         if ((length(files) > 0) & (length(remove) > 0)) {
+            index <- NULL
+            for (i in 1:length(remove)) index <- c(index, grep(tolower(remove[i]), tolower(files)))
+            if (length(index) > 0) files <- files[-index]
+         }  
+      } 
+   } 
+   
+   # Only keep unique file names:
+   files <- unique(files)
+   
+   return(files)
+}
+
+#' @describeIn locate.minilog Locate Minilog associated with snow crab survey data.
+#' @export locate.minilog.scs
+locate.minilog.scs <- function(x, year, tow.id, remove, ...){
+   # Locate candidate files:
    files <- locate(package = "gulf.trawl.data", keywords = c("minilog"), file = "asc", ...)
-   #files <- files[union(grep("[.]txt", tolower(files)), grep("[.]scd", tolower(files)))]
-   
-   # Valid file names:
-  # valid <- c("pos", "s[0-9][0-9]", "sta")
-#   ix <- union(grep("pos", tolower(files)), grep("s[0-9][0-9]", tolower(files)))
-#   ix <- union(ix, grep("sta", tolower(files)))
-#   files <- files[ix]
+  
+   # Remove files:
+   if (!missing(remove)){
+      if (length(remove) == 1) if (remove == FALSE) remove <- NULL
+      if (!missing(remove)){
+         remove <- remove[remove != "" & !is.na(remove)]
+         if ((length(files) > 0) & (length(remove) > 0)) {
+            index <- NULL
+            for (i in 1:length(remove)) index <- c(index, grep(tolower(remove[i]), tolower(files)))
+            if (length(index) > 0) files <- files[-index]
+         }  
+      } 
+   } 
    
    # Target year:
    if (!missing(year)){
@@ -56,23 +79,32 @@ locate.minilog.default <- function(x, year, tow.id, remove = c("reject", "test",
    
    # Target tow ID:
    if (!missing(tow.id)){
-      tow.id <- as.character(tow.id)
-      index <- NULL
-      for (i in 1:length(tow.id)) index <- c(index, grep(tolower(tow.id[i]), tolower(files)))
-      files <- unique(files[index])
+      print("'tow.id' not implemented.")
+      #tow.id <- as.character(tow.id)
+      #index <- NULL
+      #for (i in 1:length(tow.id)) index <- c(index, grep(tolower(tow.id[i]), tolower(files)))
+      #files <- unique(files[index])
    }
-   
-   # Remove files:
-   if (!missing(remove)) if (length(remove) == 1) if (remove == FALSE) remove <- NULL
-   if (!missing(remove)) remove <- remove[remove != "" & !is.na(remove)]
-   if ((length(files) > 0) & (length(remove) > 0)) {
-      index <- NULL
-      for (i in 1:length(remove)) index <- c(index, grep(tolower(remove[i]), tolower(files)))
-      if (length(index) > 0) files <- files[-index]
-   }
-   
-   # Only keep unique file names:
+ 
    files <- unique(files)
    
    return(files)
+}
+
+#' @describeIn locate.minilog Locate Minilog files from the Atlantic Lobster Settlement Index program.
+#' @export locate.minilog.alsi
+locate.minilog.alsi <- function(x, path, ...){
+   if (missing(path)) stop("'path' must be specified.")
+   v <- locate(file = ".csv", path = path)
+   v <- unique(v)
+   
+   return(v)
+}
+
+#' @describeIn locate.minilog Locate Minilog associated with snow crab survey tow data.
+#' @rawNamespace S3method(locate.minilog,scsset)
+locate.minilog.scsset <- function(x, ...){
+   v <- locate.minilog.scs(year = gulf.utils::year(x), tow.id = gulf.data::tow.id(x), ...)
+   v <- unique(v)
+   return(v)
 }

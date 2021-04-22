@@ -18,11 +18,11 @@
 #' # Read snow crab survey Minilog data from 1997:
 #' x <- read.minilog(1997)
 
-#' 
 #' @export read.minilog
-read.minilog <- function(x, survey = "sc", offset = 0, file, ...){
-   # READ.MINILOG - Read a minilog file.
+read.minilog <- function(x, ...) UseMethod("read.minilog")
 
+#' @rawNamespace S3method(read.minilog,default)
+read.minilog.default <- function(x, file, offset = 0, verbose = TRUE, ...){
    # Define file(s) to be read:
    if (!missing(x) & missing(file)) if (is.character(x)) file = x
    if (missing(file)) file <- locate.minilog(x, ...)

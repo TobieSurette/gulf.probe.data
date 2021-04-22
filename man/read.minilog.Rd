@@ -4,22 +4,22 @@
 \alias{read.minilog}
 \title{Read Depth-temperature Probe Data}
 \usage{
-read.minilog(x, survey = "sc", offset = 0, file, ...)
+read.minilog(x, ...)
 }
 \arguments{
 \item{x}{Survey year or file name.}
 
-\item{survey}{Survey type, as determined by the \link{survey.scsset} function.}
-
-\item{offset}{Numeric value specifying the offset time (in minutes) to include as a corrective in the data time stamps.}
+\item{...}{Other parameters passed onto \code{locate} functions or used to subset data.}
 
 \item{file}{File name(s).}
 
-\item{...}{Other parameters passed onto \code{locate} functions or used to subset data.}
-
 \item{year}{Survey year(s).}
 
+\item{survey}{Survey type, as determined by the \link{survey.scsset} function.}
+
 \item{tow.id}{Numeric value or character string specifying the ID corresponding to a particular tow sampling station.}
+
+\item{offset}{Numeric value specifying the offset time (in minutes) to include as a corrective in the data time stamps.}
 
 \item{repeats}{Logical value specifying whether to keep or average out data records with identical time stamps.}
 }
@@ -32,5 +32,4 @@ Function for reading VEMCO Minilog depth-temperature probe data. This function r
 \examples{
 # Read snow crab survey Minilog data from 1997:
 x <- read.minilog(1997)
-
 }

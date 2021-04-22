@@ -3,39 +3,52 @@
 \name{locate.minilog}
 \alias{locate.minilog}
 \alias{locate.minilog.default}
-\title{Locate Minilog Trawl Acoustic Data}
+\alias{locate.minilog.scs}
+\alias{locate.minilog.alsi}
+\alias{locate.minilog.scsset}
+\title{Locate Minilog Probe Data}
 \usage{
 locate.minilog(x, ...)
 
-\method{locate}{minilog.default}(x, year, tow.id, remove = c("reject", "test", "invalid"), ...)
+\method{locate}{minilog.default}(x, project = "scs", remove, ...)
+
+\method{locate}{minilog.scs}(x, year, tow.id, remove, ...)
+
+\method{locate}{minilog.alsi}(x, path, ...)
+
+\method{locate}{minilog.scsset}(x, ...)
 }
 \arguments{
 \item{x}{Data object.}
+
+\item{project}{Study project identifier. See \code{\link[gulf.metadata]{project}}.}
+
+\item{remove}{Character string vector specifying a list of key words, which if found in the data path or file name, 
+are removed from the search results.}
 
 \item{year}{Study or survey year.}
 
 \item{tow.id}{Character string(s) specifying a snow crab survey tow identifier(s) (e.g. \sQuote{GP354F}).}
 
-\item{remove}{Character string vector specifying a list of key words, which if found in the data path or file name, 
-are removed from the search results.}
+\item{path}{Data search path.}
 }
 \description{
 Functions to locate Minilog probe data from different projects and surveys.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{minilog.default}: Default method for locating Minilog acoustic data files.
+\item \code{minilog.default}: Default method for locating Minilog probe data files.
+
+\item \code{minilog.scs}: Locate Minilog associated with snow crab survey data.
+
+\item \code{minilog.alsi}: Locate Minilog files from the Atlantic Lobster Settlement Index program.
+
+\item \code{minilog.scsset}: Locate Minilog associated with snow crab survey tow data.
 }}
 
 \examples{
 # Global searches:
 locate.minilog()     # Find all available Minilog data files.
-locate.minilog(1990) # Find Minilog data files for the 1990 snow crab survey.
-locate.minilog(1990:1994) # Find Minilog data files for the 1990-1994 snow crab survey.
-
-# Specific searches:
-locate.minilog(1990, tow.id = 100)
-locate.minilog(1990, tow.id = "100")
-locate.minilog(1990, tow.id = "S90100")
-locate.minilog(tow.id = "S90100")
+locate.minilog(1997) # Find Minilog data files for the 1997 snow crab survey.
+locate.minilog(1997:1999) # Find Minilog data files for the 1997-1997 snow crab survey.
 }
