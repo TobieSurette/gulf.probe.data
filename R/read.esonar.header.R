@@ -1,4 +1,4 @@
-header.esonar <- function(x, file, ...){
+read.esonar.header <- function(x, file, ...){
    # Define file(s) to be read:
    if (!missing(x) & missing(file)) if (is.character(x)) file = x
    if (missing(file)) file <- locate.esonar(x, ...)

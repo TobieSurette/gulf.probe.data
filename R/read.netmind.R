@@ -52,6 +52,7 @@ read.netmind <- function(x, file, offset = 0, repeats = FALSE, ...){
    warnings <- getOption("warn")
    options(warn = -1)
    y <- read.table(file = file, quote = "",  colClasses = "character", sep = "\n", blank.lines.skip = FALSE)[[1]]
+   options(warn = warnings)
    
    # Replace problem characters:
    y <- gsub('\xee', "i", y)  
@@ -68,7 +69,6 @@ read.netmind <- function(x, file, offset = 0, repeats = FALSE, ...){
    # Fix blanks and missing data lines:
    y <- tolower(gulf.utils::deblank(y))
    y <- y[y != ""]
-   options(warn = warnings)
 
    comment <- gsub("comment[s]*[: ]*", "", y[grep("comment", y)])
    tow <- strsplit(y[grep("tow", y)], "tow")[[1]]

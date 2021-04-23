@@ -11,14 +11,14 @@
 #' @examples 
 #' # Global searches:
 #' locate.netmind()     # Find all available Netmind data files.
-#' locate.netmind(1990) # Find Netmind data files for the 1990 snow crab survey.
-#' locate.netmind(1990:1994) # Find Netmind data files for the 1990-1994 snow crab survey.
+#' locate.netmind(1999) # Find Netmind data files for the 1990 snow crab survey.
+#' locate.netmind(1999:2004) # Find Netmind data files for the 1990-1994 snow crab survey.
 #' 
 #' # Specific searches:
-#' locate.netmind(1990, tow.id = 100)
-#' locate.netmind(1990, tow.id = "100")
-#' locate.netmind(1990, tow.id = "S90100")
-#' locate.netmind(tow.id = "S90100")
+#' locate.netmind(1999, tow.id = 100)
+#' locate.netmind(1999, tow.id = "100")
+#' locate.netmind(1999, tow.id = "S90100")
+#' locate.netmind(tow.id = "355")
 
 #' @export locate.netmind
 locate.netmind <- function(x, ...) UseMethod("locate.netmind")
