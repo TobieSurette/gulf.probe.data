@@ -32,4 +32,6 @@ Function for reading VEMCO Minilog depth-temperature probe data. This function r
 \examples{
 # Read snow crab survey Minilog data from 1997:
 x <- read.minilog(1997)
+
+x <- read.minilog(tow.id = 300)
 }
