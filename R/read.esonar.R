@@ -11,41 +11,105 @@
 #' @param repeats Logical value specifying whether to keep or average out data records with identical time stamps.
 #' @param ... Other parameters passed onto \code{locate} functions or used to subset data.
 
-
-#' @describeIn read.probe Read \strong{eSonar} trawl acoustic monitoring data.
 #' @export read.esonar
-read.esonar <- function(x, file, offset = -3*60, repeats = FALSE, ...){
+read.esonar <- function(x, ...) UseMethod("read.esonar")
+
+#' @describeIn read.esonar Read a eSonar data file header information.
+#' @export read.esonar.header
+read.esonar.header <- function(x, file, verbose = FALSE, ...){
    # Define file(s) to be read:
    if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)) file <- locate.esonar(x, ...)
+   if (missing(file)){
+      if (missing(x)) file <- locate.esonar(...) else file <- locate.esonar(x, ...)  
+   }
+   if (length(file) == 0) return(NULL)
+
+   # Read multiple eSonar files and concatenate them:
+   if (length(file) == 0) return(NULL)
+   if (length(file) > 1){
+      for (i in 1:length(file)){
+         if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
+         header <- read.esonar.header(file[i])
+         header <- as.data.frame(t(header), stringsAsFactors = FALSE)
+         header["file.name"] <- unlist(lapply(strsplit(file[i], "/"), function(x) x[length(x)])[[1]])
+         if (i == 1){
+            x <- header
+         }else{
+            if (!all(names(header) %in% names(x))) x[setdiff(names(header), names(x))] <- ""
+            if (!all(names(x) %in% names(header))) header[setdiff(names(x), names(header))] <- ""
+            header <- header[names(x)]
+            x <- rbind(x, header)
+         } 
+      }
+      
+      rownames(x) <- NULL
+      
+      return(x)
+   }
+
+   # Read and parse header info:
+   y <- read.table(file = file, nrow = 10, colClasses = "character", sep = "\n", blank.lines.skip = FALSE)
+
+   # Define header information:
+   header <- NULL
+   vars <- gsub(" ", "", strsplit(y[1, ], ",")[[1]])
+   values <- strsplit(y[2, ], ",")[[1]]
+   if (length(values) > length(vars)) values <- values[1:length(vars)]
+   header[vars] <- values
+   comment <- strsplit(y[4, ], ",")[[1]]
+   if (length(comment) == 0) comment <- ""
+   vars <- gsub(" ", "", strsplit(y[3, ], ",")[[1]])
+   if (length(comment) > 1){
+      vars <- vars[vars != ""]      
+      comment <- paste(comment[comment != ""], collapse = ", ")
+   }
+   header[vars] <- comment
+   header <- header[names(header) != ""]
+   
+   return(header)
+}
+
+#' @describeIn read.esonar Read \strong{eSonar} trawl acoustic monitoring data.
+#' @rawNamespace S3(read.esonar,default)
+read.esonar.default <- function(x, file, offset = -3*60, repeats = FALSE, verbose = FALSE, ...){
+   # Define file(s) to be read:
+   if (!missing(x) & missing(file)) if (is.character(x)) file = x
+   if (missing(file)){
+      if (missing(x)) file <- locate.esonar(...) else file <- locate.esonar(x, ...)  
+   }
    if (length(file) == 0) return(NULL)
 
    # Read multiple netmind files and concatenate them:
    if (length(file) == 0) return(NULL)
    if (length(file) > 1){
-      x <- NULL
+      x <- vector(mode = "list", length = length(file))
+      k <- 0
       for (i in 1:length(file)){
-         cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
-         temp <- read.esonar(file[i])
-         temp <- expand(temp, c("header", "file.name"))  # Attach attribute information as appended columns.
-
-         if (!is.null(x)){
-            # Create NA-valued columns if new variables appear:
-            index <- setdiff(names(x), names(temp))
-            if (length(index) > 0) temp[index] <- NA
-            index <- setdiff(names(temp), names(x))
-            if (length(index) > 0) x[index] <- NA
-
-            # Order new file properly:
-            temp <- temp[names(x)]
-         }
-
-         x <- rbind(x, temp)
+         if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
+         x[i] <- list(expand(read.esonar(file[i])))
+         k <- k + nrow(x[[i]])
       }
-      temp <- attributes(x)
-      temp <- temp[setdiff(names(temp), names(header(x)))]
-      attributes(x) <- temp
 
+      # Standardize data frame formats:
+      vars <- unique(unlist(lapply(x, names)))
+      for (i in 1:length(x)){
+         ix <- setdiff(vars, names(x[[i]]))
+         if (length(ix) > 0){
+            x[[i]][ix] <- ""
+            x[[i]] <- x[[i]][vars]
+         }
+      }
+
+      # Efficiently catenate data frames:
+      while (length(x) >= 2){
+         ix <- seq(2, length(x), by = 2)
+         for (i in ix) x[i] <- list(rbind(x[[i-1]], x[[i]]))
+         if (i < length(x)) ix <- c(ix, length(x))
+         x <- x[ix]
+      }
+      x <- x[[1]]
+      
+      gulf.metadata::header(x) <- NULL
       return(x)
    }
 
@@ -66,13 +130,8 @@ read.esonar <- function(x, file, offset = -3*60, repeats = FALSE, ...){
    if (length(k) == 0) k <- 5
    fields <- gsub(" ", "_", strsplit(y[k,], ",")[[1]]) # Split header fields and their values.
 
-   # Read E-Sonar data:
-   x <- readLines(file)
-   x <- x[(k+1):length(x)]
-   x <- x[-which(nchar(x) < 50)]
-   x <- x[-grep("CPU", x)]   
-   
-   #x <- read.table(file = file, header = FALSE, skip = k, sep = ",", colClasses = "character")
+   # Read file:
+   x <- read.table(file = file, header = FALSE, skip = k, sep = ",", colClasses = "character")
    names(x) <- fields
 
    # Remove lines with no date fields:
@@ -80,15 +139,14 @@ read.esonar <- function(x, file, offset = -3*60, repeats = FALSE, ...){
    x <- x[substr(x[, 1], 1, 3) == names(temp[temp == max(temp)]), ]
 
    # Parse date fields:
-   date <- data.frame(year = as.numeric(paste("", substr(x$GPS_Date, 8, 11), sep = "")),
+   date <- data.frame(year = as.numeric(paste0("", substr(x$GPS_Date, 8, 11))),
                       month = match(tolower(substr(x$GPS_Date, 4, 6)), substr(tolower(month.name), 1, 3)),
                       day = as.numeric(substr(x$GPS_Date, 1, 2)),
                       stringsAsFactors = FALSE)
 
    # Pad time with zeroes:
-   index <- (nchar(x$GPS_Time) == 5)
-   x$GPS_Time[index] <- paste("0", x$GPS_Time[index], sep = "")
-
+   ix <- (nchar(x$GPS_Time) == 5)
+   x$GPS_Time[ix] <- paste0("0", x$GPS_Time[ix])
    time <- data.frame(hour   = as.numeric(substr(x$GPS_Time, 1, 2)),
                       minute = as.numeric(substr(x$GPS_Time, 3, 4)),
                       second = as.numeric(substr(x$GPS_Time, 5, 6)),

@@ -29,10 +29,12 @@ read.minilog <- function(x, ...) UseMethod("read.minilog")
 read.minilog.header <- function(x, file, verbose = FALSE, ...){
    # Define file(s) to be read:
    if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)) file <- locate.minilog(x, ...)
+   if (missing(file)){
+      if (missing(x)) file <- locate.minilog(...) else file <- locate.minilog(x, ...)  
+   }
    if (length(file) == 0) return(NULL)
    
-   # Read multiple netmind files and concatenate them:
+   # Read multiple Minilog files and concatenate them:
    if (length(file) == 0) return(NULL)
    if (length(file) > 1){
       for (i in 1:length(file)){
@@ -97,9 +99,11 @@ read.minilog.header <- function(x, file, verbose = FALSE, ...){
 read.minilog.default <- function(x, file, offset = 0, verbose = FALSE, ...){
    # Define file(s) to be read:
    if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)) file <- locate.minilog(x, ...)
+   if (missing(file)){
+      if (missing(x)) file <- locate.minilog(...) else file <- locate.minilog(x, ...)  
+   }
    if (length(file) == 0) return(NULL)
-   
+
    # Read multiple netmind files and concatenate them:
    if (length(file) == 0) return(NULL)
    if (length(file) > 1){
@@ -130,6 +134,7 @@ read.minilog.default <- function(x, file, offset = 0, verbose = FALSE, ...){
       }
       x <- x[[1]]
       
+      gulf.metadata::header(x) <- NULL
       return(x)
    }
 
@@ -249,7 +254,8 @@ read.minilog.default <- function(x, file, offset = 0, verbose = FALSE, ...){
    }
 
    # Convert to minilog object:
-   x <- minilog(x, header = header, file.name = file.name)
-
+   x <- minilog(x)
+   header(x) <- header
+   
    return(x)
 }

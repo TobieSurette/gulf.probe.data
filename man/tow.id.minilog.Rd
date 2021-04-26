@@ -4,8 +4,17 @@
 \alias{tow.id.minilog}
 \title{Find Minilog Tow ID}
 \usage{
-\method{tow.id}{minilog}(x, method)
+\method{tow.id}{minilog}(x, method = "observed")
+}
+\arguments{
+\item{method}{Method used to determine the tow identification tag. Available options are \sQuote{observed}, \sQuote{file name},
+\sQuote{header}, and \sQuote{time}.}
 }
 \description{
 Find the tow identification tag associated with a Minilog object.
+}
+\examples{
+files <- locate.minilog(2018)
+tow.id(read.minilog(files[200]))             
+
 }

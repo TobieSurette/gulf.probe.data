@@ -11,135 +11,146 @@
 #' @param repeats Logical value specifying whether to keep or average out data records with identical time stamps.
 #' @param ... Other parameters passed onto \code{locate} functions or used to subset data.
 
-
 #' @export read.star.oddi
-read.star.oddi <- function(x, file, offset = 0, repeats = FALSE, ...){
+read.star.oddi <- function(x, ...) UseMethod("read.star.oddi")
+
+#' @describeIn read.star.oddi Read a Star Oddi data file header information.
+#' @export read.star.oddi.header
+read.star.oddi.header <- function(x, file, verbose = FALSE, ...){
    # Define file(s) to be read:
    if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)) file <- locate.star.oddi(x, ...)
+   if (missing(file)){
+      if (missing(x)) file <- locate.star.oddi(...) else file <- locate.star.oddi(x, ...)  
+   }
    if (length(file) == 0) return(NULL)
-
+   
    # Read multiple netmind files and concatenate them:
+   if (length(file) == 0) return(NULL)
    if (length(file) > 1){
-      x <- NULL
       for (i in 1:length(file)){
-          cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
-          temp <- read.star.oddi(file[i])
-          information <- header(temp)
-          for (j in 1:length(information)){
-             temp[, names(information)[j]] <- information[[names(information)[j]]]
-          }
-
-          if (!is.null(x)){
-             # Create NA-valued columns if new variables appear:
-             index <- setdiff(names(x), names(temp))
-             if (length(index) > 0) temp[index] <- NA
-             index <- setdiff(names(temp), names(x))
-             if (length(index) > 0) x[index] <- NA
-
-             # Order new file properly:
-             temp <- temp[names(x)]
-          }
-
-          x <- rbind(x, temp)
+         if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
+         header <- read.star.oddi.header(file[i])
+         header <- as.data.frame(t(header), stringsAsFactors = FALSE)
+         header["file.name"] <- unlist(lapply(strsplit(file[i], "/"), function(x) x[length(x)])[[1]])
+         if (i == 1){
+            x <- header
+         }else{
+            if (!all(names(header) %in% names(x))) x[setdiff(names(header), names(x))] <- ""
+            if (!all(names(x) %in% names(header))) header[setdiff(names(x), names(header))] <- ""
+            header <- header[names(x)]
+            x <- rbind(x, header)
+         } 
       }
-      temp <- attributes(x)
-      temp <- temp[setdiff(names(temp), names(header(x)))]
-      attributes(x) <- temp
-
+      
+      rownames(x) <- NULL
+      
       return(x)
    }
-
+   
    # Empty file:
    if (length(file) == 0) return(NULL)
 
    # Read and parse header info:
-   y <- read.table(file = file, nrow = 30, colClasses = "character", comment.char = "", sep = "\n",
-                   blank.lines.skip = FALSE, fileEncoding = "Windows-1252")[[1]]
-   y <- deblank(y)
+   y <- read.table(file = file, nrow = 30, colClasses = "character", comment.char = "", sep = "\n", blank.lines.skip = FALSE, fileEncoding = "Windows-1252")[[1]]
+   y <- gulf.utils::deblank(y)
    y <- gsub("\t", " ", y)
-   index <- grep("^#", y)
-   k <- max(index)
-   y <- y[index]
-   y <- gsub("^#[0-9]* ", "",y)
+   ix <- grep("^#", y)
+   y <- y[ix]
+   y <- gsub("^#[0-9]* ", "", y)
 
    # Parse header:
    str <- strsplit(y, ":")
    header <- deblank(unlist(lapply(str, function(x) x[2])))
-   names(header) <- deblank(unlist(lapply(str, function(x) x[1])))
+   names(header) <- unlist(lapply(str, function(x) x[1]))
+   names(header) <- gsub("#", "", names(header))
+   names(header) <- gulf.utils::deblank(names(header))
+   
+   return(header)
+}
 
-   # Extract file name:
-   file.name <- lapply(strsplit(file, "/"), function(x) x[length(x)])[[1]]
+#' @export read.star.oddi
+read.star.oddi <- function(x, file, offset = 0, repeats = FALSE, verbose = FALSE, ...){
+   # Define file(s) to be read:
+   if (!missing(x) & missing(file)) if (is.character(x)) file = x
+   if (missing(file)){
+      if (missing(x)) file <- locate.star.oddi(...) else file <- locate.star.oddi(x, ...)  
+   }
+   if (length(file) == 0) return(NULL)
 
+   # Read multiple netmind files and concatenate them:
+   if (length(file) == 0) return(NULL)
+   if (length(file) > 1){
+      x <- vector(mode = "list", length = length(file))
+      k <- 0
+      for (i in 1:length(file)){
+         if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
+         x[i] <- list(expand(read.star.oddi(file[i])))
+         k <- k + nrow(x[[i]])
+      }
+
+      # Standardize data frame formats:
+      vars <- unique(unlist(lapply(x, names)))
+      for (i in 1:length(x)){
+         ix <- setdiff(vars, names(x[[i]]))
+         if (length(ix) > 0){
+            x[[i]][ix] <- ""
+            x[[i]] <- x[[i]][vars]
+         }
+      }
+
+      # Efficiently catenate data frames:
+      while (length(x) >= 2){
+         ix <- seq(2, length(x), by = 2)
+         for (i in ix) x[i] <- list(rbind(x[[i-1]], x[[i]]))
+         if (i < length(x)) ix <- c(ix, length(x))
+         x <- x[ix]
+      }
+      x <- x[[1]]
+      
+      gulf.metadata::header(x) <- NULL
+      return(x)
+   }
+
+   # Read file header information:
+   header <- read.star.oddi.header(file)
+   
    # Define variable names:
    fields <- header[grep("Channel ", names(header))]
    fields <- unlist(lapply(strsplit(fields, " "), function(x) x[1]))
-
+   fields <- tolower(gsub("[(].+[)]", "", fields))
+   fields <- tolower(gsub("[-]", ".", fields))
+   if (length(fields) == 0){
+      # Define variable names:
+      fields <- names(header)[grep("Axis ", names(header))]
+      fields <- unlist(lapply(strsplit(fields, "Axis [0-9]+ +"), function(x) x[2]))
+      fields <- unlist(lapply(strsplit(fields, "[(] *"), function(x) x[1]))
+      fields <- tolower(gsub("[(].+[)]", "", fields))
+      fields <- tolower(gsub("[-]", ".", fields)) 
+   }
+   
    # Read E-Sonar data:
-   x <- read.table(file = file, header = FALSE, skip = k, dec = ",", sep = "\t",
+   x <- read.table(file = file, header = FALSE, skip = length(header), dec = ",", sep = "\t",
                    colClasses = c("numeric", "character", rep("numeric", length(fields))))
    fields <- c("record", "date", fields)
    names(x) <- fields
 
    # Parse date fields:
-   date <- data.frame(year = as.numeric(substr(x$date, 7, 8)),
-                      month = as.numeric(substr(x$date, 4, 5)),
-                      day = as.numeric(substr(x$date, 1, 2)),
-                      stringsAsFactors = FALSE)
-
-   x$time <- unlist(lapply(strsplit(x$date, "[ ,]"), function(x) x[2]))
-   time <- data.frame(hour   = as.numeric(substr(x$time, 1, 2)),
-                      minute = as.numeric(substr(x$time, 4, 5)),
-                      second = as.numeric(substr(x$time, 7, 8)),
-                      stringsAsFactors = FALSE)
-
-   # Auto-correct date and time:
-   index <- (date$year < 100)
-   date$year[index] <- 2000 + date$year[index]
-   index <- is.na(date$year)
-   date$year[index] <- unique(date$year[!index])[1]
-   index <- is.na(date$month)
-   date$month[index] <- unique(date$month[!index])[1]
-   index <- is.na(date$day)
-   date$day[index] <- unique(date$day[!index])[1]
+   date <- data.frame(date = paste0(paste0("20", substr(x$date, 7, 8)), "-", substr(x$date, 4, 5),  "-", substr(x$date, 1, 2)), stringsAsFactors = FALSE)
+   time <- data.frame(time = unlist(lapply(strsplit(x$date, "[ ,]"), function(x) x[2])), stringsAsFactors = FALSE)
 
    # Create result variable:
    v <- cbind(x["record"], date, time, x[setdiff(names(x), c("date", "record"))])
 
    # Modify time by specified offset:
    if (offset != 0){
-      t <- as.matrix(as.POSIXlt(time(v) + offset * 60))
-      v$year   <- t[, "year"] + 1900
-      v$month  <- t[, "mon"] + 1
-      v$day    <- t[, "mday"]
-      v$hour   <- t[, "hour"]
-      v$minute <- t[, "min"]
-      v$second <- t[, "sec"]
+      t <- time(v) +  offset * 60
+      v$date <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[1]))
+      v$time <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[2]))
    }
-
-   # Add tow ID to header:
-   if (length(grep("GP[0-9][0-9][0-9]", file)) > 0){
-      temp <- unlist(lapply(strsplit(file, "GP"), function(x) x[length(x)]))
-      temp <- lapply(strsplit(temp, "/", fixed = TRUE), function(x) x[1])
-      tow.id <- paste0("GP", unlist(temp))
-      tow.id <- unlist(lapply(strsplit(tow.id, "[.]"), function(x) x[1]))
-   }
-
-   # Create 'star.oddi' object:
-   v <- star.oddi(v, header = header, tow.id = tow.id, file.name = file.name, ...)
-
-   # Define measurement units:
-   index <- grep("[(]", names(v))
-   vars <- names(v)[index]
-   units <- strsplit(gsub("[)]", "", vars), "[(]")
-   vars <- tolower(unlist(lapply(units, function(x) x[1])))
-   units <- unlist(lapply(units, function(x) x[2]))
-   units <- gsub("°", "degrees", units)
-   str <- names(v)
-   str[index] <- vars
-   names(v) <- str
-   names(units) <- vars
-   gulf.metadata::units(v) <- units
+   
+   # Convert to 'star.oddi' object:
+   v <- star.oddi(v)
+   header(v) <- header
 
    return(v)
 }

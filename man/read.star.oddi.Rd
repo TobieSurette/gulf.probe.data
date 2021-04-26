@@ -2,9 +2,12 @@
 % Please edit documentation in R/read.star.oddi.R
 \name{read.star.oddi}
 \alias{read.star.oddi}
+\alias{read.star.oddi.header}
 \title{Read Star Oddi Probe Data.}
 \usage{
-read.star.oddi(x, file, offset = 0, repeats = FALSE, ...)
+read.star.oddi(x, file, offset = 0, repeats = FALSE, verbose = FALSE, ...)
+
+read.star.oddi.header(x, file, verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{Survey year or file name.}
@@ -26,3 +29,8 @@ read.star.oddi(x, file, offset = 0, repeats = FALSE, ...)
 \description{
 Functions to read Star Oddi data, such as depth/temperature or acoustic trawl monitoring data.
 }
+\section{Functions}{
+\itemize{
+\item \code{read.star.oddi.header}: Read a Star Oddi data file header information.
+}}
+

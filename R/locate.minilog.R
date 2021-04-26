@@ -78,11 +78,32 @@ locate.minilog.scs <- function(x, year, tow.id, remove, ...){
    
    # Target tow ID:
    if (!missing(tow.id)){
-      print("'tow.id' not implemented.")
-      #tow.id <- as.character(tow.id)
-      #index <- NULL
-      #for (i in 1:length(tow.id)) index <- c(index, grep(tolower(tow.id[i]), tolower(files)))
-      #files <- unique(files[index])
+      v <- read.minilog.header(files)
+      
+      y <- rep("", nrow(v)) # Result variable.
+
+      # Parse study ID:
+      ix <- grep("study.id", tolower(names(v)))
+      if (length(ix) > 0){
+         iv <- (y == "") & (v[, ix] != "") & !is.na(v[, ix])
+         y[iv] <- v[iv, ix]
+      }
+
+      # Parse study description:
+      ix <- grep("study.description", tolower(names(v)))
+      if (length(ix) > 0){
+         iv <- (y == "") & (v[, ix] != "") & !is.na(v[, ix])
+         y[iv] <- v[iv, ix]
+      }
+      
+      # Formatting adjustments:
+      y <- gsub("[(].*[)]", "", y)
+      y <- gulf.utils::deblank(toupper(y))
+      
+      # Spot corrections:
+      y[which(y == "ZONE - F  385-S")] <- "GP385S"
+      v <- y
+      files <- files[grep(toupper(tow.id), toupper(v))]
    }
  
    files <- unique(files)

@@ -3,25 +3,23 @@
 \name{locate.star.oddi}
 \alias{locate.star.oddi}
 \alias{locate.star.oddi.default}
+\alias{locate.star.oddi.scs}
 \alias{locate.star.oddi.scsset}
 \title{Locate Star Oddi Probe Data}
 \usage{
 locate.star.oddi(x, ...)
 
-\method{locate}{star.oddi.default}(
-  x,
-  year,
-  tow.id,
-  full.names = TRUE,
-  probe,
-  remove = c("test", "lost", "NA"),
-  ...
-)
+\method{locate}{star.oddi.default}(x, project = "scs", remove, ...)
+
+\method{locate}{star.oddi.scs}(x, year, tow.id, probe = c("headline", "footrope", "tilt"), remove, ...)
 
 \method{locate}{star.oddi.scsset}(x, ...)
 }
 \arguments{
 \item{x}{Data object.}
+
+\item{remove}{Character string vector specifying a list of key words, which if found in the data path or file name, 
+are removed from the search results.}
 
 \item{year}{Study or survey year.}
 
@@ -29,23 +27,20 @@ locate.star.oddi(x, ...)
 
 \item{probe}{Character string specifying probe type or location. For example \sQuote{headline} specifies the Star Oddi 
 probe attached to the trawl headline on snow crab surveys.}
-
-\item{remove}{Character string vector specifying a list of key words, which if found in the data path or file name, 
-are removed from the search results.}
 }
 \description{
 Functions to locate Star Oddi probe data from various projects and surveys.
 }
-\section{Functions}{
+\section{Methods (by class)}{
 \itemize{
-\item \code{locate.star.oddi}: Generic method for locating Star Oddi data files.
+\item \code{star.oddi.default}: Default method for locating Star Oddi probe data files.
 
-\item \code{locate.star.oddi.default}: Default method for locating Star Oddi data files.
+\item \code{star.oddi.scs}: Locate Star Oddi data files from the snow crab survey.
 
-\item \code{locate.star.oddi.scsset}: \code{scsset} method for locating Star Oddi data files.
+\item \code{star.oddi.scsset}: \code{scsset} method for locating Star Oddi data files.
 }}
 
 \examples{
-locate.star.oddi(2020, probe = "headline", source = 'ascii') 
-locate.star.oddi(2020, probe = "footrope", source = 'ascii', tow.id = "GP354F")
+locate.star.oddi(2020, probe = "headline") 
+locate.star.oddi(2020, probe = "tilt", tow.id = "GP354F")
 }

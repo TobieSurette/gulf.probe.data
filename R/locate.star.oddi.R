@@ -1,4 +1,4 @@
-#' Locate Star Oddi Probe Data
+#' @title Locate Star Oddi Probe Data
 #' 
 #' @description Functions to locate Star Oddi probe data from various projects and surveys.
 #' 
@@ -11,60 +11,74 @@
 #'              probe attached to the trawl headline on snow crab surveys.
 #' 
 #' @examples 
-#' locate.star.oddi(2020, probe = "headline", source = 'ascii') 
-#' locate.star.oddi(2020, probe = "footrope", source = 'ascii', tow.id = "GP354F")
+#' locate.star.oddi(2020, probe = "headline") 
+#' locate.star.oddi(2020, probe = "tilt", tow.id = "GP354F")
 
-#' @describeIn locate.probe Generic method for locating Star Oddi data files.
 #' @export locate.star.oddi
 locate.star.oddi <- function(x, ...) UseMethod("locate.star.oddi")
 
-#' @describeIn locate.probe Default method for locating Star Oddi data files.
+#' @describeIn locate.star.oddi Default method for locating Star Oddi probe data files.
 #' @rawNamespace S3method(locate.star.oddi,default)
-locate.star.oddi.default <- function(x, year, tow.id, full.names = TRUE, probe, remove = c("test", "lost", "NA"), ...){
+locate.star.oddi.default <- function(x, project = "scs", remove, ...){
    # Parse 'x' argument:
-   if (!missing(x)){
-      if (is.numeric(x)) year <- x
-      if (is.character(x)){
-         if (any(file.exists(x))) return(x[file.exists(x)])
-         tow.id <- x
-      }
-      if (is.data.frame(x)) if (("tow.id" %in% names(x)) & missing(tow.id)) tow.id <- x$tow.id
-      if (is.data.frame(x)) if (("year" %in% names(x)) & missing(year)) year <- sort(unique(x$year))
-   }
+   if (!missing(x)) if (is.character(x)) if (any(file.exists(x))) return(x[file.exists(x)])
+
+   # Locate Star Oddi files by project:
+   project <- project(project)
+   if (project == "scs")  files <- locate.star.oddi.scs(x, remove  = c("test", "lost", "NA"), ...)
+   if (project == "nss")  files <- locate.star.oddi.nss(x, ...)  
+   
+   # Remove files:
+   if (!missing(remove)){
+      if (length(remove) == 1) if (remove == FALSE) remove <- NULL
+      if (!missing(remove)){
+         remove <- remove[remove != "" & !is.na(remove)]
+         if ((length(files) > 0) & (length(remove) > 0)) {
+            index <- NULL
+            for (i in 1:length(remove)) index <- c(index, grep(tolower(remove[i]), tolower(files)))
+            if (length(index) > 0) files <- files[-index]
+         }  
+      } 
+   } 
+   
+   # Keep only unique file names:
+   files <- unique(files)
+   
+   return(files)
+}
+
+#' @describeIn locate.star.oddi Locate Star Oddi data files from the snow crab survey.
+#' @export locate.star.oddi.scs
+locate.star.oddi.scs <- function(x, year, tow.id, probe = c("headline", "footrope", "tilt"), remove, ...){
+   # Parse 'x' and 'year' arguments:
+   if (!missing(x)) if (is.numeric(x)) year <- x
    
    # Parse 'probe' argument:
-   if (missing(probe)) probe <- c("headline", "footrope")
-   probe <- tolower(probe)
-   if (!all(probe %in% c("headline", "tilt", "footrope"))) 
-      stop("'probe' must be either 'headline', 'tilt', 'footrope'.")
-   if ("tilt" %in% probe) probe <- unique(c("footrope", probe))
-   if ("footrope" %in% probe) probe <- unique(c("tilt", probe))
-   
-   # Load set of file names:
-   files <- NULL
-   for (i in 1:length(probe)){
-      files <- unique(c(files, locate(pattern = "*.DAT", keywords = c("star oddi", probe[i]), ...)))
-   }
-   
-   # Search Shared drive:
-   if (length(files) == 0){
-      path <- paste0(options()$gulf.path$snow.crab, "/Offshore Crab Common/Fishing Year ", year, "/Trawl Data/South Western Gulf/Star Oddi")
-      if (!missing(location)) path <- paste0(path, "/", location)
-      if (file.exists(options()$gulf.path$snow.crab)) files <- locate(pattern = "*.DAT", path = path)
-      
-      # Remove redundant files:
-      fn <- unlist(lapply(strsplit(files, "/"), function(x) x[length(x)]))
-      files <- files[setdiff(1:length(files), grep("^[0-9]-", fn))]
-   }
+   probe <- tolower(gsub("[. ]", "", probe))
+   probe <- probe[probe %in% c("headline", "footrope", "tilt")]
 
+   # Locate candidate files:
+   files <- NULL
+   for (i in 1:length(probe)) files <- c(files, locate(package = "gulf.trawl.data", file = "*.DAT", keywords = c("scs", "star", "oddi", probe[i]), ...))
+   
+   # Remove files:
+   if (length(remove) == 1) if (remove == FALSE) remove <- NULL
+   remove <- remove[remove != "" & !is.na(remove)]
+   if ((length(files) > 0) & (length(remove) > 0)){
+      ix <- NULL
+      for (i in 1:length(remove)) ix <- c(ix, grep(tolower(remove[i]), tolower(files)))
+      if (length(ix) > 0) files <- files[-ix]
+   }
+   
    # Target year:
    if (!missing(year)){
       if (!is.numeric(year)) stop("'year' must be a numeric integer.")
       year <- sort(year)
       index <- NULL
       for (i in 1:length(year)) index <- c(index, grep(year[i], files))
+      files <- unique(files[index])
    }
-
+   
    # Target tow ID:
    if (!missing(tow.id)){
       tow.id <- as.character(tow.id)
@@ -73,16 +87,44 @@ locate.star.oddi.default <- function(x, year, tow.id, full.names = TRUE, probe, 
       files <- unique(files[index])
    }
 
-   # Remove path:
-   if (!full.names) files <- unlist(lapply(strsplit(files, "/", fixed = TRUE), function(x) x[length(x)]))
+   # Only keep unique file names:
+   files <- unique(files)
 
+   return(files)
+}
+
+#' @describeIn locate.star.oddi \code{scsset} method for locating Star Oddi data files.
+#' @rawNamespace S3method(locate.star.oddi,scsset)
+locate.star.oddi.scsset <- function(x, ...) return(locate.star.oddi(year = as.numeric(substr(gulf.utils::date(x), 1, 4)), tow.id = x$tow.id, ...))
+
+#' @describeIn locate.star.oddi Locate Star Oddi data files from the Northumberland Strait survey.
+#' @export locate.star.oddi.scs
+locate.star.oddi.nss <- function(x, year, remove, ...){
+   # Parse 'x' and 'year' arguments:
+   if (!missing(x)) if (is.numeric(x)) year <- x
+
+   # Locate candidate files:
+   files <- NULL
+   for (i in 1:length(probe)) files <- c(files, locate(package = "gulf.trawl.data", file = "*.DAT", keywords = c("nss", "star", "oddi"), ...))
+   
    # Remove files:
-   if (!missing(remove)) if (length(remove) == 1) if (remove == FALSE) remove <- NULL
-   if (!missing(remove)) remove <- remove[remove != "" & !is.na(remove)]
-   if ((length(files) > 0) & (length(remove) > 0)) {
+   if (!missing(remove)){
+      if (length(remove) == 1) if (remove == FALSE) remove <- NULL
+      remove <- remove[remove != "" & !is.na(remove)]
+      if ((length(files) > 0) & (length(remove) > 0)){
+         ix <- NULL
+         for (i in 1:length(remove)) ix <- c(ix, grep(tolower(remove[i]), tolower(files)))
+         if (length(ix) > 0) files <- files[-ix]
+      }
+   }
+   
+   # Target year:
+   if (!missing(year)){
+      if (!is.numeric(year)) stop("'year' must be a numeric integer.")
+      year <- sort(year)
       index <- NULL
-      for (i in 1:length(remove)) index <- c(index, grep(tolower(remove[i]), tolower(files)))
-      if (length(index) > 0) files <- files[-index]
+      for (i in 1:length(year)) index <- c(index, grep(year[i], files))
+      files <- unique(files[index])
    }
 
    # Only keep unique file names:
@@ -90,7 +132,3 @@ locate.star.oddi.default <- function(x, year, tow.id, full.names = TRUE, probe, 
 
    return(files)
 }
-
-#' @describeIn locate.probe \code{scsset} method for locating Star Oddi data files.
-#' @rawNamespace S3method(locate.star.oddi,scsset)
-locate.star.oddi.scsset <- function(x, ...) return(locate.star.oddi(year = as.numeric(substr(gulf.utils::date(x), 1, 4)), tow.id = x$tow.id, ...))
