@@ -32,7 +32,7 @@ minilog <- function(x, ...) UseMethod("minilog")
 #' @rawNamespace S3method(minilog,default)
 minilog.default <- function(x, ...){
    # Define as probe data object:
-   x <- probe(x, ...)
+   #x <- probe(x, ...)
    
    # Add 'esonar' class tag:
    class(x) <- unique(c("minilog", class(x)))

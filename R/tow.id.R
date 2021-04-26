@@ -2,16 +2,23 @@
 #' 
 #' @description Find the tow identification tag associated with a Minilog object.
 #' 
+#' @param method Method used to determine the tow identification tag. Available options are \sQuote{observed}, \sQuote{file name},
+#'               \sQuote{header}, and \sQuote{time}. 
+#'               
+#' @examples 
+#' files <- locate.minilog(2018)
+#' tow.id(read.minilog(files[1]))             
+#' 
 
 #' @rawNamespace S3method(tow.id,minilog)
-tow.id.minilog <- function(x, method){
+tow.id.minilog <- function(x, method = "observed"){
    # method = "time"
    
    # Parse 'method' argument:
    if (missing(method)) method <- "observed"
-   method <- match.arg(tolower(method), c("observed", "time")) 
+   method <- match.arg(tolower(method), c("observed", "file name", "header", "time")) 
    
-   if (method == "observed"){
+   if (method %in% c("observed", "header")){
       ix <- grep("study.id", tolower(names(x)))
       if (length(ix) > 0){
           v <- x[, ix]
@@ -21,16 +28,26 @@ tow.id.minilog <- function(x, method){
           # Tow ID fixes:
           v[which(v == "ZONE - F  385-S")] <- "GP385S"
       }else{
-          v <- header(x)[["study.id"]]
+          v <- header(x)
+          ix <- grep("study.id", tolower(names(v)))
+          if (length(ix) == 0) ix <- grep("study.description", tolower(names(v)))
+          if (length(ix) == 0) return("")
+          v <- v[[ix]]
           v <- gsub("[(].*[)]", "", v)
           v <- gulf.utils::deblank(toupper(v))          
           v[which(v == "ZONE - F  385-S")] <- "GP385S"
       }
    }
    
+   # Determine tow ID from file name:
+   if (method == "file.name"){
+      
+   }
+   
    if (method == "time"){
       # Load scs tow data:
       y <- read.scsset(year = unique(year(x)))
+      x <- gulf.utils::expand(x)
       
       # Define grouping variables:
       if ("file.name" %in% names(x)) vars <- c("date", "file.name") else vars <- c("date", names(x)[grep("study", names(x))])

@@ -2,9 +2,15 @@
 % Please edit documentation in R/read.minilog.R
 \name{read.minilog}
 \alias{read.minilog}
-\title{Read Depth-temperature Probe Data}
+\alias{read.minilog.header}
+\alias{read.minilog.default}
+\title{Read VEMCO Minilog Data}
 \usage{
 read.minilog(x, ...)
+
+\method{read.minilog}{header}(x, file, verbose = FALSE, ...)
+
+\method{read.minilog}{default}(x, file, offset = 0, verbose = FALSE, ...)
 }
 \arguments{
 \item{x}{Survey year or file name.}
@@ -13,25 +19,33 @@ read.minilog(x, ...)
 
 \item{file}{File name(s).}
 
+\item{offset}{Numeric value specifying the offset time (in minutes) to include as a corrective in the data time stamps.}
+
 \item{year}{Survey year(s).}
 
 \item{survey}{Survey type, as determined by the \link{survey.scsset} function.}
 
 \item{tow.id}{Numeric value or character string specifying the ID corresponding to a particular tow sampling station.}
 
-\item{offset}{Numeric value specifying the offset time (in minutes) to include as a corrective in the data time stamps.}
-
 \item{repeats}{Logical value specifying whether to keep or average out data records with identical time stamps.}
 }
 \description{
-Function for reading VEMCO Minilog depth-temperature probe data. This function reads the ASCII format Minilog data. 
-             The file's header information is stored in the object's attributes, and maybe extracted using the 
-             'header' function. If multiple file names are specified, the data are appended together and columns are 
-             added which contain the header information from each file.
+VEMCO Minilog probes are used to measure water temperature and depth. These functions reads 
+             the ASCII formatted Minilog data or header information.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{header}: Read a Minilog data file header information.
+
+\item \code{default}: Read a Minilog data file.
+}}
+
 \examples{
 # Read snow crab survey Minilog data from 1997:
 x <- read.minilog(1997)
-
 x <- read.minilog(tow.id = 300)
+
+# Read minilog headers:
+files <- locate.minilog(year = 1999, project = "scs")
+read.minilog.header(files)
 }
