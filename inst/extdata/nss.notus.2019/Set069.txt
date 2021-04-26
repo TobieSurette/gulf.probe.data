@@ -1,0 +1,62 @@
+[NOTUS TEXTFILE V3.1]
+File Created: 01-Aug-2019 8:07:05
+Tow Date: 01-Aug-2019 8:04:11
+
+
+Transponder: C24S
+Placement: Starboard
+
+Code,Time,Range(m),Data(m),Latitude,Longitude,Echo Sounder(m),Comment
+C24S,08:04:13,57.4,27.1,---,---,---,
+C24S,08:04:50,57.0,27.8,---,---,---,
+C24S,08:05:27,57.2,26.7,---,---,---,
+C24S,08:06:04,50.1,26.7,---,---,---,
+C24S,08:06:46,---,---,---,---,---,
+
+Transponder: A96N
+Placement: Port
+
+Code,Time,Range(m),Data(),Latitude,Longitude,Echo Sounder(m),Comment
+A96N,08:04:19,52.1,---,---,---,---,
+A96N,08:04:55,51.8,---,---,---,---,
+A96N,08:05:32,51.9,---,---,---,---,
+A96N,08:06:09,41.2,---,---,---,---,
+A96N,08:06:53,---,---,---,---,---,
+
+Transponder: G72H
+Placement: Headline Height
+
+Code,Time,Range(m),Data(m),Latitude,Longitude,Echo Sounder(m),Comment
+G72H,08:04:25,121.2,2.4,---,---,---,
+G72H,08:05:02,120.5,1.8,---,---,---,
+G72H,08:05:39,120.6,1.8,---,---,---,
+G72H,08:06:16,102.9,1.8,---,---,---,
+G72H,08:07:00,---,---,---,---,---,
+
+Transponder: B28O
+Placement: Wing Spread
+
+Code,Time,Range(m),Data(m),Latitude,Longitude,Echo Sounder(m),Comment
+B28O,08:04:31,115.6,12.4,---,---,---,
+B28O,08:05:08,115.4,9.2,---,---,---,
+B28O,08:05:45,115.0,9.0,---,---,---,
+B28O,08:06:22,90.1,6.8,---,---,---,
+
+Transponder: F44D
+Placement: Depth 1
+Depth Calibration: 1015
+
+Code,Time,Range(m),Data(m),Latitude,Longitude,Echo Sounder(m),Comment
+F44D,08:04:37,115.5,12.1,---,---,---,
+F44D,08:05:14,115.7,11.8,---,---,---,
+F44D,08:05:51,114.8,12.4,---,---,---,
+F44D,08:06:27,84.7,11.3,---,---,---,
+
+Transponder: F76G
+Placement: Bottom Contact
+
+Code,Time,Range(m),Data(°),Latitude,Longitude,Echo Sounder(m),Comment
+F76G,08:04:47,---,---,---,---,---,
+F76G,08:05:24,---,---,---,---,---,
+F76G,08:06:01,---,---,---,---,---,
+F76G,08:06:38,---,---,---,---,---,

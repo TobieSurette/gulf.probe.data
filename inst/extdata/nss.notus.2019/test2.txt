@@ -1,0 +1,16 @@
+[NOTUS TEXTFILE V3.1]
+File Created: 09-Jul-2019 6:57:09
+Tow Date: 09-Jul-2019 6:56:30
+
+
+Transponder: C24S
+Placement: Starboard
+
+Code,Time,Range(m),Data(m),Latitude,Longitude,Echo Sounder(m),Comment
+C24S,06:56:37,---,---,---,---,---,
+
+Transponder: A96N
+Placement: Port
+
+Code,Time,Range(m),Data(),Latitude,Longitude,Echo Sounder(m),Comment
+A96N,06:56:44,---,---,---,---,---,
