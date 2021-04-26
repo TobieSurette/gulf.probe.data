@@ -10,7 +10,7 @@ read.esonar.header <- function(x, file, ...){
       x <- NULL
       for (i in 1:length(file)){
          #cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
-         header <- header.esonar(file[i])
+         header <- read.esonar.header(file[i])
          header["file.name"] <- unlist(lapply(strsplit(file[i], "/"), function(x) x[length(x)])[[1]])
          #if (length(header) != 5) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
          x <- rbind(x, header)

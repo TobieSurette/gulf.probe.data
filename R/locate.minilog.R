@@ -27,7 +27,7 @@ locate.minilog.default <- function(x, project = "scs", remove, ...){
 
    # Locate Minilog files by project:
    project <- project(project)
-   if (project == "scs")  files <- locate.minilog.scs(x, remove = c("reject", "test", "invalid"), ...)
+   if (project == "scs")  files <- locate.minilog.scs(x, remove = c("reject", "test", "invalid", "DS_Store"), ...)
    if (project == "alsi") files <- locate.minilog.alsi(x, ...)  
    
    # Remove files:
@@ -43,7 +43,7 @@ locate.minilog.default <- function(x, project = "scs", remove, ...){
       } 
    } 
    
-   # Only keep unique file names:
+   # Keep only unique file names:
    files <- unique(files)
    
    return(files)
@@ -52,21 +52,20 @@ locate.minilog.default <- function(x, project = "scs", remove, ...){
 #' @describeIn locate.minilog Locate Minilog associated with snow crab survey data.
 #' @export locate.minilog.scs
 locate.minilog.scs <- function(x, year, tow.id, remove, ...){
+   if (!missing(x)) if (is.numeric(x)) year <- x
+      
    # Locate candidate files:
-   files <- locate(package = "gulf.trawl.data", keywords = c("minilog"), file = "asc", ...)
-  
+   files <- locate(package = "gulf.trawl.data", keywords = c("minilog"), ...)
+   files <- files[union(grep("asc", tolower(files)), grep(".csv$", tolower(files)))]
+
    # Remove files:
-   if (!missing(remove)){
-      if (length(remove) == 1) if (remove == FALSE) remove <- NULL
-      if (!missing(remove)){
-         remove <- remove[remove != "" & !is.na(remove)]
-         if ((length(files) > 0) & (length(remove) > 0)) {
-            index <- NULL
-            for (i in 1:length(remove)) index <- c(index, grep(tolower(remove[i]), tolower(files)))
-            if (length(index) > 0) files <- files[-index]
-         }  
-      } 
-   } 
+   if (length(remove) == 1) if (remove == FALSE) remove <- NULL
+   remove <- remove[remove != "" & !is.na(remove)]
+   if ((length(files) > 0) & (length(remove) > 0)){
+      ix <- NULL
+      for (i in 1:length(remove)) ix <- c(ix, grep(tolower(remove[i]), tolower(files)))
+      if (length(ix) > 0) files <- files[-ix]
+   }
    
    # Target year:
    if (!missing(year)){
