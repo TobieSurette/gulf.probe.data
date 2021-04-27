@@ -14,61 +14,6 @@
 #' @export read.esonar
 read.esonar <- function(x, ...) UseMethod("read.esonar")
 
-#' @describeIn read.esonar Read a eSonar data file header information.
-#' @export read.esonar.header
-read.esonar.header <- function(x, file, verbose = FALSE, ...){
-   # Define file(s) to be read:
-   if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)){
-      if (missing(x)) file <- locate.esonar(...) else file <- locate.esonar(x, ...)  
-   }
-   if (length(file) == 0) return(NULL)
-
-   # Read multiple eSonar files and concatenate them:
-   if (length(file) == 0) return(NULL)
-   if (length(file) > 1){
-      for (i in 1:length(file)){
-         if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
-         header <- read.esonar.header(file[i])
-         header <- as.data.frame(t(header), stringsAsFactors = FALSE)
-         header["file.name"] <- unlist(lapply(strsplit(file[i], "/"), function(x) x[length(x)])[[1]])
-         if (i == 1){
-            x <- header
-         }else{
-            if (!all(names(header) %in% names(x))) x[setdiff(names(header), names(x))] <- ""
-            if (!all(names(x) %in% names(header))) header[setdiff(names(x), names(header))] <- ""
-            header <- header[names(x)]
-            x <- rbind(x, header)
-         } 
-      }
-      
-      rownames(x) <- NULL
-      
-      return(x)
-   }
-
-   # Read and parse header info:
-   y <- read.table(file = file, nrow = 10, colClasses = "character", sep = "\n", blank.lines.skip = FALSE)
-
-   # Define header information:
-   header <- NULL
-   vars <- gsub(" ", "", strsplit(y[1, ], ",")[[1]])
-   values <- strsplit(y[2, ], ",")[[1]]
-   if (length(values) > length(vars)) values <- values[1:length(vars)]
-   header[vars] <- values
-   comment <- strsplit(y[4, ], ",")[[1]]
-   if (length(comment) == 0) comment <- ""
-   vars <- gsub(" ", "", strsplit(y[3, ], ",")[[1]])
-   if (length(comment) > 1){
-      vars <- vars[vars != ""]      
-      comment <- paste(comment[comment != ""], collapse = ", ")
-   }
-   header[vars] <- comment
-   header <- header[names(header) != ""]
-   
-   return(header)
-}
-
 #' @describeIn read.esonar Read \strong{eSonar} trawl acoustic monitoring data.
 #' @rawNamespace S3method(read.esonar,default)
 read.esonar.default <- function(x, file, offset = -3*60, repeats = FALSE, verbose = FALSE, ...){
@@ -117,13 +62,7 @@ read.esonar.default <- function(x, file, offset = -3*60, repeats = FALSE, verbos
    y <- read.table(file = file, nrow = 20, colClasses = "character", sep = "\n", blank.lines.skip = FALSE)
 
    # Define header information:
-   header <- NULL
-   header[gsub(" ", "", strsplit(y[1, ], ",")[[1]])] <- strsplit(y[2, ], ",")[[1]]
-   comment <- strsplit(y[4, ], ",")[[1]]
-   if (length(comment) == 0) comment <- ""
-   header[gsub(" ", "", strsplit(y[3, ], ",")[[1]])] <- comment
-   header <- header[names(header) != ""]
-   file.name <- lapply(strsplit(file, "/"), function(x) x[length(x)])[[1]]
+   header <- header.esonar(file)
 
    # Define data field names:
    k <- max(grep("CPU", y[, 1]))
@@ -217,8 +156,8 @@ read.esonar.default <- function(x, file, offset = -3*60, repeats = FALSE, verbos
    v <- v[!(is.na(v$hour) | is.na(v$minute) | is.na(v$second)), ]
 
    # Create 'esonar' object:
-   v <- esonar(v, header = header, file.name = file.name)
+   v <- esonar(v)
+   header(v) <- header
 
    return(v)
 }
-

@@ -24,76 +24,6 @@
 #' @export read.minilog
 read.minilog <- function(x, ...) UseMethod("read.minilog")
 
-#' @describeIn read.minilog Read a Minilog data file header information.
-#' @export read.minilog.header
-read.minilog.header <- function(x, file, verbose = FALSE, ...){
-   # Define file(s) to be read:
-   if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)){
-      if (missing(x)) file <- locate.minilog(...) else file <- locate.minilog(x, ...)  
-   }
-   if (length(file) == 0) return(NULL)
-   
-   # Read multiple Minilog files and concatenate them:
-   if (length(file) == 0) return(NULL)
-   if (length(file) > 1){
-      for (i in 1:length(file)){
-         if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
-         header <- read.minilog.header(file[i])
-         header <- as.data.frame(t(header), stringsAsFactors = FALSE)
-         header["file.name"] <- unlist(lapply(strsplit(file[i], "/"), function(x) x[length(x)])[[1]])
-         if (i == 1){
-            x <- header
-         }else{
-            if (!all(names(header) %in% names(x))) x[setdiff(names(header), names(x))] <- ""
-            if (!all(names(x) %in% names(header))) header[setdiff(names(x), names(header))] <- ""
-            header <- header[names(x)]
-            x <- rbind(x, header)
-         } 
-      }
-      
-      rownames(x) <- NULL
-      
-      return(x)
-   }
-   
-   # Read and parse header info:
-   warnings <- getOption("warn")
-   options(warn = -1)
-   y <- read.table(file = file, nrow = 10, colClasses = "character", sep = "\n")
-   options(warn = warnings)
-   y <- y[, 1]
-   
-   # Fix odd characters:
-   y <- gsub('\xeb', " ", y)  
-   y <- gsub('\xf8C', " ", y)
-   y <- gsub('\xb0C', " ", y)
-   y <- gsub('\xee', "i", y)  
-   y <- gsub('\xfb', "u", y)  
-   y <- gsub('\xce', "I", y) 
-   y <- gsub('\xc9', "E", y) 
-   y <- gsub('\xf4', "a", y) 
-   y <- gsub('\xe0', "a", y) 
-   y <- gsub('\xe9', "e", y)
-   y <- gsub('\xe8', "e", y)  
-   y <- gsub('\"+', " ", y)
-   
-   # Define location of field names :
-   k <- grep("date", tolower(y)) 
-   if (length(k) == 0) k <- (length(y) + 1)
-   if (length(k) > 1)  k <- k[1]
-
-   # Parse header information:
-   header <- gulf.utils::deblank(unlist(lapply(strsplit(y[1:(k-1)], "[a-z ][:=]"), function(x) x[2])))
-   str <- tolower(gsub("^[*] ", "", unlist(lapply(strsplit(y[1:(k-1)], "[:=]"), function(x) x[1]))))
-   str <- gsub("[\\%*][ ]", "", str)
-   names(header) <- gsub(" ", ".", gulf.utils::deblank(str))
-   header <- header[!is.na(header)] 
-   file.name <- lapply(strsplit(file, "/"), function(x) x[length(x)])[[1]]
-   
-   return(header)
-}
-
 #' @describeIn read.minilog Read a Minilog data file.
 #' @rawNamespace S3method(read.minilog,default)
 read.minilog.default <- function(x, file, offset = 0, verbose = FALSE, ...){
@@ -135,34 +65,6 @@ read.minilog.default <- function(x, file, offset = 0, verbose = FALSE, ...){
       x <- x[[1]]
       
       gulf.metadata::header(x) <- NULL
-      return(x)
-   }
-
-   # Read multiple minilog files and concatenate them:
-   if (length(file) == 0) return(NULL)
-   if (length(file) > 1){
-      x <- NULL
-      for (i in 1:length(file)){
-          cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
-          temp <- read.minilog(file[i], ...)
-          for (j in 1:length(header(temp))){
-             temp[, names(header(temp))[j]] <- header(temp)[[names(header(temp))[j]]]
-          }
-
-          # Add columns if necessary:
-          if ((length(setdiff(names(temp), names(x))) > 0) & (!is.null(x))){
-             x[setdiff(names(temp), names(x))] <- NA
-             x <- x[names(temp)]
-          }
-
-          # Append rows:
-          x <- rbind(x, temp)
-      }
-      temp <- attributes(x)
-      temp <- temp[setdiff(names(temp), names(header(x)))]
-      attributes(x) <- temp
-      if ("Study.ID" %in% names(x)) x$Study.ID <- unlist(lapply(strsplit(x$Study.ID, " "), function(x) x[[1]]))
-
       return(x)
    }
 
@@ -209,29 +111,24 @@ read.minilog.default <- function(x, file, offset = 0, verbose = FALSE, ...){
    fields <- tolower(unlist(strsplit(y[k], sep)[[1]]))
    fields[grep("date", fields)]  <- "date"
    fields[grep("time", fields)]  <- "time"
-   fields[grep("atod", fields)] <- "depth"
+   fields[grep("atod", fields)]  <- "depth"
    fields[grep("depth", fields)] <- "depth"
    fields[grep("temp", fields)]  <- "temperature"
-
+   
+   # Name variable fields:
+   names(x) <- fields
+   
    # Get date format:
    date.format <- tolower(unlist(strsplit(y[k], sep)[[1]]))[which(fields == "date")]
    date.format <- tolower(gsub("[)]", "", unlist(strsplit(date.format, "[(]"))[2]))
    if (is.na(date.format)) date.format <- "yyyy-mm-dd"
    
    # Parse header information:
-   header <- gulf.utils::deblank(unlist(lapply(strsplit(y[1:(k-1)], "[a-z ][:=]"), function(x) x[2])))
-   str <- tolower(gsub("^[*] ", "", unlist(lapply(strsplit(y[1:(k-1)], "[:=]"), function(x) x[1]))))
-   str <- gsub("[\\%*][ ]", "", str)
-   names(header) <- gsub(" ", ".", gulf.utils::deblank(str))
-   header <- header[!is.na(header)] 
-   file.name <- lapply(strsplit(file, "/"), function(x) x[length(x)])[[1]]
-   
-   # Name variable fields:
-   names(x) <- fields
+   header <- header.minilog(file)
    
    # Format numeric variables:
    if ("temperature" %in% names(x)) x$temperature <- as.numeric(x$temperature)
-   if ("depth" %in% names(x))       x$depth <- as.numeric(x$depth)
+   if ("depth" %in% names(x))       x$depth       <- as.numeric(x$depth)
    
    # Fix date formats:
    if (date.format == "yy-mm-dd"){
@@ -244,8 +141,7 @@ read.minilog.default <- function(x, file, offset = 0, verbose = FALSE, ...){
    
    # Set header:
    header(x) <- header
-   attr(x, "file.name") <- file.name
-   
+
    # Modify time by specified offset:
    if (offset != 0){
       t <- time(v) +  offset * 60

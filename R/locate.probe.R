@@ -16,8 +16,40 @@
 #' locate.probe(2018, "star.oddi", project = "scs", location = "headline")   # 2018 snow crab survey Star Oddi data files.
 #' locate.probe(probe = "scanmar", project = "scs")                          # All snow crab survey Scanmar files.
 #'
+#' locate.minilog()                     # Find all available Minilog data files.
+#' locate.minilog(1997)                 # Find Minilog data files for the 1997 snow crab survey.
+#' locate.minilog(1997:1999)            # Find Minilog data files for the 1997-1997 snow crab survey.
+#'
+#' locate.star.oddi(2020, probe = "headline") 
+#' locate.star.oddi(2020, probe = "tilt", tow.id = "GP354F")
+#' 
+#' #' # Global searches:
+#' locate.scanmar()     # Find all available Scanmar data files.
+#' locate.scanmar(1990) # Find Scanmar data files for the 1990 snow crab survey.
+#' locate.scanmar(1990:1994) # Find Scanmar data files for the 1990-1994 snow crab survey.
+#' 
+#' # Specific searches:
+#' locate.scanmar(1990, tow.id = 100)
+#' locate.scanmar(1990, tow.id = "100")
+#' locate.scanmar(1990, tow.id = "S90100")
+#' locate.scanmar(tow.id = "S90100")
+#' 
+#' locate.netmind()     # Find all available Netmind data files.
+#' locate.netmind(1999) # Find Netmind data files for the 1990 snow crab survey.
+#' locate.netmind(1999:2004) # Find Netmind data files for the 1990-1994 snow crab survey.
+#' 
+#' # Specific searches:
+#' locate.netmind(1999, tow.id = 100)
+#' locate.netmind(1999, tow.id = "100")
+#' locate.netmind(1999, tow.id = "S90100")
+#' locate.netmind(tow.id = "355")
+#'  
+#' locate.esonar(2020) # Find snow crab survey eSonar data from 2020.
+#' locate.esonar(2020, tow.id = "GP354F")
+#' 
 #' @seealso code{\link[gulf.data]{project}}, code{\link[gulf.data]{probe}}
 
+#' @export locate.probe
 locate.probe <- function(x, probe, project = "scs", location = "headline", remove, year, tow.id, ...){
    # Parse 'x' argument:
    if (!missing(x)){
@@ -159,3 +191,50 @@ locate.probe <- function(x, probe, project = "scs", location = "headline", remov
    
    return(files)
 }
+
+#' @export locate.minilog
+locate.minilog <- function(x, ...) UseMethod("locate.minilog")
+
+#' @describeIn locate.probe Default method for locating Minilog probe data files.
+#' @rawNamespace S3method(locate.minilog,default)
+locate.minilog.default <- function(x, ...) return(locate.probe(x, probe = "minilog", remove = c("reject", "test", "invalid", "DS_Store"), ...))
+
+#' @describeIn locate.probe Locate Minilog associated with snow crab survey tow data.
+#' @rawNamespace S3method(locate.minilog,scsset)
+locate.minilog.scsset <- function(x, ...) return(locate.minilog(year = gulf.utils::year(x), tow.id = gulf.data::tow.id(x), ...))
+
+#' @export locate.star.oddi
+locate.star.oddi <- function(x, ...) UseMethod("locate.star.oddi")
+
+#' @describeIn locate.probe Default method for locating Star Oddi probe data files.
+#' @rawNamespace S3method(locate.star.oddi,default)
+locate.star.oddi.default <- function(x, ...) return(locate.probe(x, probe = "star.oddi", ...))
+
+#' @describeIn locate.probe \code{scsset} method for locating Star Oddi data files.
+#' @rawNamespace S3method(locate.star.oddi,scsset)
+locate.star.oddi.scsset <- function(x, ...) return(locate.star.oddi(year = gulf.utils::year(x), tow.id = x$tow.id, ...))
+
+#' @export locate.scanmar
+locate.scanmar <- function(x, ...) UseMethod("locate.scanmar")
+
+#' @describeIn locate.probe Default method for locating Scanmar acoustic data files.
+#' @rawNamespace S3method(locate.scanmar,default)
+locate.scanmar.default <- function(x, ...) return(locate.probe(x, probe = "scanmar", remove = c("reject", "test", "invalid"), ...))
+
+#' @export locate.netmind
+locate.netmind <- function(x, ...) UseMethod("locate.netmind")
+
+#' @describeIn locate.probe Default method for locating Netmind acoustic data files.
+#' @rawNamespace S3method(locate.netmind,default)
+locate.netmind.default <- function(x, ...)  return(locate.probe(x, probe = "netmind", remove = c("reject", "test", "invalid"), ...))
+
+#' @export locate.esonar
+locate.esonar <- function(x, ...) UseMethod("locate.esonar")
+
+#' @describeIn locate.probe Default method for locating eSonar data files.
+#' @rawNamespace S3method(locate.esonar,default)
+locate.esonar.default <- function(x, ...) return(locate.probe(x, probe = "esonar", remove = c("test", "use raw"), ...))
+
+#' @describeIn locate.probe \code{scsset} method for locating eSonar data files.
+#' @rawNamespace S3method(locate.esonar,scsset)
+locate.esonar.scsset <- function(x, ...) return(locate.esonar(year = unique(year(x)), tow.id = unique(x$tow.id, ...)))

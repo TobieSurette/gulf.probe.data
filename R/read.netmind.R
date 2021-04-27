@@ -20,34 +20,45 @@
 read.netmind <- function(x, file, offset = 0, repeats = FALSE, ...){
    # Define file(s) to be read:
    if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)) file <- locate.netmind(x, ...)
+   if (missing(file)){
+      if (missing(x)) file <- locate.netmind(...) else file <- locate.netmind(x, ...)  
+   }
    if (length(file) == 0) return(NULL)
-   
+
    # Read multiple Netmind files and concatenate them:
    if (length(file) == 0) return(NULL)
    if (length(file) > 1){
-      x <- NULL
+      x <- vector(mode = "list", length = length(file))
+      k <- 0
       for (i in 1:length(file)){
-         cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
-         tmp <- read.netmind(file[i])
-         if (nrow(tmp) > 0) tmp <- gulf.utils::expand(tmp)  # Attach attribute information as appended columns.
-         if (!is.null(x) & nrow(tmp) > 0){
-            # Create NA-valued columns if new variables appear:
-            index <- setdiff(names(x), names(tmp))
-            if (length(index) > 0) tmp[index] <- NA
-            index <- setdiff(names(tmp), names(x))
-            if (length(index) > 0) x[index] <- NA
-            
-            # Order new file properly:
-            tmp <- tmp[names(x)]
-         }
-         
-         if (nrow(tmp) > 0) x <- rbind(x, tmp)
+         if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
+         x[i] <- list(expand(read.netmind(file[i])))
+         k <- k + nrow(x[[i]])
       }
+
+      # Standardize data frame formats:
+      vars <- unique(unlist(lapply(x, names)))
+      for (i in 1:length(x)){
+         ix <- setdiff(vars, names(x[[i]]))
+         if (length(ix) > 0){
+            x[[i]][ix] <- ""
+            x[[i]] <- x[[i]][vars]
+         }
+      }
+
+      # Efficiently catenate data frames:
+      while (length(x) >= 2){
+         ix <- seq(2, length(x), by = 2)
+         for (i in ix) x[i] <- list(rbind(x[[i-1]], x[[i]]))
+         if (i < length(x)) ix <- c(ix, length(x))
+         x <- x[ix]
+      }
+      x <- x[[1]]
       
+      gulf.metadata::header(x) <- NULL
       return(x)
    }
-
+   
    # Read file and clean up weird characters:
    warnings <- getOption("warn")
    options(warn = -1)
@@ -69,15 +80,9 @@ read.netmind <- function(x, file, offset = 0, repeats = FALSE, ...){
    # Fix blanks and missing data lines:
    y <- tolower(gulf.utils::deblank(y))
    y <- y[y != ""]
-
-   comment <- gsub("comment[s]*[: ]*", "", y[grep("comment", y)])
-   tow <- strsplit(y[grep("tow", y)], "tow")[[1]]
-   tow <- tow[length(tow)]
   
    # Define header info:
-   header <- c(file.name = lapply(strsplit(file, "/"), function(x) x[length(x)])[[1]], 
-               comment = comment, 
-               tow = tow)
+   header <- header.netmind(file)
    
    # Define header information:
    ix <- grep("date", tolower(y))
