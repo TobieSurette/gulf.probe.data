@@ -1,0 +1,44 @@
+============================================================
+Deployment   : GP330F
+Current time : 19/09/2019 11:28:00 AM
+Start at     : 19/09/2019 11:28:00 AM
+Comment:
+
+------------------------------------------------------------
+Measurement interval  (s) : 1
+Average interval      (s) : 1
+Blanking distance     (m) : 0.37
+Measurement load      (%) : 100
+Power level               : LOW+
+Diagnostics interval(min) : N/A
+Diagnostics samples       : N/A
+Compass upd. rate     (s) : 1
+Coordinate System         : ENU
+Speed of sound      (m/s) : MEASURED
+Salinity            (ppt) : 35
+Analog input 1            : NONE
+Analog input 2            : NONE
+Analog input power out    : DISABLED
+Raw magnetometer out      : OFF
+File wrapping             : OFF
+TellTale                  : ON
+AcousticModem             : OFF
+Serial output             : ON
+Baud rate                 : 9600
+------------------------------------------------------------
+Assumed duration   (days) : 30.0
+Battery utilization   (%) : 985.0
+Battery level         (V) : 13.7
+Recorder size        (MB) : 9
+Recorder free space  (MB) : 8.973
+Memory required      (MB) : 103.8
+Vertical vel. prec (cm/s) : 4.0
+Horizon. vel. prec (cm/s) : 2.3
+------------------------------------------------------------
+Instrument ID             : AQD14497
+Head ID                   : AQD 9174
+Firmware version          : 3.36
+------------------------------------------------------------
+Aquadopp Version 1.40.16
+Copyright (C) Nortek AS
+============================================================

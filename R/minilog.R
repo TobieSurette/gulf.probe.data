@@ -19,11 +19,12 @@
 #' locate.minilog("GP001", year = 2018:2020)
 #'
 #' # Working example:
-#' x <- read.minilog(2018, tow.id = "GP354")
+#' x <- read.minilog(year = 2018, tow.id = "GP354F")
 #' describe(x)  # Description of file contents.
 #' header(x)    # File header information.
-#' plot(x)      # Graphical summary.
 #' summary(x)   # Data summary.
+#' 
+#' @seealso locate.minilog, read.minilog
 
 #' @export
 minilog <- function(x, ...) UseMethod("minilog")

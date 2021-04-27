@@ -5,6 +5,7 @@
 \alias{locate.star.oddi.default}
 \alias{locate.star.oddi.scs}
 \alias{locate.star.oddi.scsset}
+\alias{locate.star.oddi.nss}
 \title{Locate Star Oddi Probe Data}
 \usage{
 locate.star.oddi(x, ...)
@@ -14,6 +15,8 @@ locate.star.oddi(x, ...)
 \method{locate}{star.oddi.scs}(x, year, tow.id, probe = c("headline", "footrope", "tilt"), remove, ...)
 
 \method{locate}{star.oddi.scsset}(x, ...)
+
+\method{locate}{star.oddi.nss}(x, year, remove, ...)
 }
 \arguments{
 \item{x}{Data object.}
@@ -38,6 +41,8 @@ Functions to locate Star Oddi probe data from various projects and surveys.
 \item \code{star.oddi.scs}: Locate Star Oddi data files from the snow crab survey.
 
 \item \code{star.oddi.scsset}: \code{scsset} method for locating Star Oddi data files.
+
+\item \code{star.oddi.nss}: Locate Star Oddi data files from the Northumberland Strait survey.
 }}
 
 \examples{

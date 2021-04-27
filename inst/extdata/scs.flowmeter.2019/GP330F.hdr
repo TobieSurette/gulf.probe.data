@@ -1,0 +1,143 @@
+[C:\Users\Temp\Desktop\Flow\GP330F\DumpGP330F_rep.aqd]
+---------------------------------------------------------------------
+Number of measurements                3108
+Number of checksum errors             1
+Time of first measurement             19/09/2019 6:35:00 AM
+Time of last measurement              19/09/2019 7:26:47 AM
+
+User setup
+---------------------------------------------------------------------
+Measurement interval                  1 sec
+Sampling rate                         NORMAL
+Average interval                      1 sec
+Measurement load                      100 %
+Transmit pulse length                 0.75 m
+Blanking distance                     0.37 m
+Compass update rate                   1 sec
+Diagnostics measurements              DISABLED
+Diagnostics - Interval                43200 sec
+Diagnostics - Number of samples       20
+Diagnostics - Cell number             1
+Diagnostics - Number of pings         20
+Analog input 1                        NONE
+Raw magnetometer output               OFF
+External input 2                      NONE
+External input 3                      NONE
+Power output                          DISABLED
+Powerlevel                            LOW+
+Coordinate system                     ENU
+Sound speed                           MEASURED
+Salinity                              35.0 ppt
+Distance between pings                10.00 m
+Number of beams                       3
+Number of pings per burst             23
+Software version                      1.40.16
+Deployment name                       GP330F
+Wrap mode                             OFF
+Deployment time                       19/09/2019 6:35:00 AM
+Comments                              
+System1                               125
+System2                               49
+System3                               32
+System4                               437
+System5                               512
+System9                               66
+System10                              0
+System11                              0
+System12                              0
+System13                              0
+System14                              1
+System16                              1
+System17                              32
+System22                              43200
+System28                              20
+System29                              1
+System30                              20
+System31                              15618 15646 15673 15699
+System42                              0
+System43                              0
+System44                              0
+System45                              6
+Start command                         Recorder deployment
+CRC download                          Unknown
+
+Hardware configuration
+---------------------------------------------------------------------
+Serial number                         AQD 0000
+Internal code version                 0
+Hardware revision                     0 (A)
+Recorder size                         0 MByte
+Firmware version                      
+Velocity range                        NORMAL
+Sync signal data out delay            0 sec
+Sync signal power down delay          0 sec
+
+Head configuration
+---------------------------------------------------------------------
+Pressure sensor                       YES
+Compass                               YES
+Tilt sensor                           YES
+System 1                              1
+Head frequency                        2000 kHz
+Serial number                         AQD 9174
+Transformation matrix                 0.7070 0.7070 0.0000
+                                      -0.7070 0.7070 0.0000
+                                      -0.7070 -0.7070 1.4141
+Magnetometer calibration matrix       0.9835 -0.0023 -0.0125
+                                      0.0038 1.0000 -0.0037
+                                      0.0013 -0.0076 0.9801
+Compass hard iron calibration         10 51 57
+Pressure sensor calibration           0 0 49453 5739
+Number of beams                       3
+System5                               0 0 45 0
+System7                               -26767 -945 13055 105
+                                      -25536 -2578 12944 427
+System8                               0 0 -1
+                                      0 1 0
+                                      1 0 0
+System9                               0 0 -1
+                                      0 -1 0
+                                      -1 0 0
+System10                              0 -1 1 0
+System11                              0 -1 -1 0
+System13                              1481 259 7128 10861
+System14                              -25796 -1290 13210 -29
+                                      -25501 3910 13005 -656
+System15                              32225 -74 -409 123
+                                      32767 -121 44 -248
+                                      32114 10 51 57
+                                      0 0 0 0
+System16                              0 0 0 0
+System17                              5461
+System18                              3600
+System19                              3600
+System20                              10000
+
+Data file format
+---------------------------------------------------------------------
+[C:\Users\Temp\Desktop\Flow\GP330F\DumpGP330F_rep.dat]
+ 1   Month                            (1-12)
+ 2   Day                              (1-31)
+ 3   Year
+ 4   Hour                             (0-23)
+ 5   Minute                           (0-59)
+ 6   Second                           (0-59)
+ 7   Error code
+ 8   Status code
+ 9   Velocity (Beam1|X|East)          (m/s)
+10   Velocity (Beam2|Y|North)         (m/s)
+11   Velocity (Beam3|Z|Up)            (m/s)
+12   Amplitude (Beam1)                (counts)
+13   Amplitude (Beam2)                (counts)
+14   Amplitude (Beam3)                (counts)
+15   Battery voltage                  (V)
+16   Soundspeed                       (m/s)
+17   Heading                          (degrees)
+18   Pitch                            (degrees)
+19   Roll                             (degrees)
+20   Pressure                         (dbar)
+21   Temperature                      (degrees C)
+22   Analog input 1
+23   Analog input 2
+24   Speed                            (m/s)
+25   Direction                        (degrees)

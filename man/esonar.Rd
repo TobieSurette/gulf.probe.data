@@ -33,6 +33,4 @@ locate.esonar("GP001", year = 2018:2020)
 x <- read.esonar("GP001", year = 2020)
 describe(x)  # Description of file contents.
 header(x)    # File header information.
-plot(x)      # Graphical summary.
-summary(x)   # Data summary.
 }
