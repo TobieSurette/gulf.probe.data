@@ -14,6 +14,8 @@
 #'
 #' # Working example:
 #' locate.netmind(1999, tow.id = 223)
+#' 
+#' @seealso \link{locate.netmind}, \link{read.netmind}
 
 #' @export
 netmind <- function(x, ...) UseMethod("netmind")

@@ -24,7 +24,7 @@
 #' header(x)    # File header information.
 #' summary(x)   # Data summary.
 #' 
-#' @seealso locate.minilog, read.minilog
+#' @seealso \link{locate.minilog}, \link{read.minilog}
 
 #' @export
 minilog <- function(x, ...) UseMethod("minilog")

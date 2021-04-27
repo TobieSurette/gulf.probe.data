@@ -14,6 +14,8 @@
 #'
 #' # Working example:
 #' locate.scanmar(1990, tow.id = 223)
+#' 
+#' @seealso \link{locate.scanmar}, \link{read.scanmar}
 
 #' @export
 scanmar <- function(x, ...) UseMethod("scanmar")

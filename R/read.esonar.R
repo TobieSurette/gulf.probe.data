@@ -70,7 +70,7 @@ read.esonar.header <- function(x, file, verbose = FALSE, ...){
 }
 
 #' @describeIn read.esonar Read \strong{eSonar} trawl acoustic monitoring data.
-#' @rawNamespace S3(read.esonar,default)
+#' @rawNamespace S3method(read.esonar,default)
 read.esonar.default <- function(x, file, offset = -3*60, repeats = FALSE, verbose = FALSE, ...){
    # Define file(s) to be read:
    if (!missing(x) & missing(file)) if (is.character(x)) file = x

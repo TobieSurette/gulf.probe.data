@@ -16,6 +16,8 @@
 #' x <- read.esonar("GP001", year = 2020)
 #' describe(x)  # Description of file contents.
 #' header(x)    # File header information.
+#'
+#' @seealso \link{locate.esonar}, \link{read.esonar}
 
 #' @export
 esonar <- function(x, ...) UseMethod("esonar")
