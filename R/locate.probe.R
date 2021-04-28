@@ -127,7 +127,15 @@ locate.probe <- function(x, probe, project = "scs", location = "headline", remov
    if (probe == "esonar"){
       if (project == "scs"){  
          # Load set of file names:
-         files <- locate(package = "gulf.trawl.data", file = "*.csv", keywords = "esonar", ...)
+         files <- locate(package = "gulf.trawl.data", file = "*.csv", keywords = c("scs", "esonar"), ...)
+      }
+   }
+   
+   # Notus:
+   if (probe == "notus"){
+      if (project == "scs"){  
+         # Load set of file names:
+         files <- locate(package = "gulf.trawl.data", file = "*.txt", keywords = c("nss", "notus"), ...)
       }
    }
    
@@ -154,34 +162,41 @@ locate.probe <- function(x, probe, project = "scs", location = "headline", remov
    # Target tow ID:
    if (!missing(tow.id)){
       if (!is.null(tow.id)){
-         if (project == "scs"){
-            h <- read.minilog.header(files)
-            y <- rep("", nrow(h)) # Result variable.
+         if ((project == "scs")){
+            if (probe == "minilog"){
+               h <- header.minilog(files)
+               y <- rep("", nrow(h)) # Result variable.
       
-            # Parse study ID:
-            ix <- grep("study.id", tolower(names(h)))
-            if (length(ix) > 0){
-               iv <- (y == "") & (h[, ix] != "") & !is.na(h[, ix])
-               y[iv] <- h[iv, ix]
-            }
+               # Parse study ID:
+               ix <- grep("study.id", tolower(names(h)))
+               if (length(ix) > 0){
+                  iv <- (y == "") & (h[, ix] != "") & !is.na(h[, ix])
+                  y[iv] <- h[iv, ix]
+               }
       
-            # Parse study description:
-            ix <- grep("study.description", tolower(names(h)))
-            if (length(ix) > 0){
-               iv <- (y == "") & (h[, ix] != "") & !is.na(h[, ix])
-               y[iv] <- h[iv, ix]
-            }
+               # Parse study description:
+               ix <- grep("study.description", tolower(names(h)))
+               if (length(ix) > 0){
+                  iv <- (y == "") & (h[, ix] != "") & !is.na(h[, ix])
+                  y[iv] <- h[iv, ix]
+               }
       
-            # Formatting adjustments:
-            y <- gsub("[(].*[)]", "", y)
-            y <- gulf.utils::deblank(toupper(y))
+               # Formatting adjustments:
+               y <- gsub("[(].*[)]", "", y)
+               y <- gulf.utils::deblank(toupper(y))
       
-            # Spot corrections:
-            y[which(y == "ZONE - F  385-S")] <- "GP385S"
-            h <- y
-            files <- files[toupper(h) %in% toupper(tow.id)]
+               # Spot corrections:
+               y[which(y == "ZONE - F  385-S")] <- "GP385S"
+               h <- y
+               files <- files[toupper(h) %in% toupper(tow.id)]
             
-            tow.id <- NULL
+               tow.id <- NULL
+            }else{
+               tow.id <- unique(tow.id)
+               ix <- NULL
+               for (i in 1:length(tow.id)) ix <- c(ix, grep(tow.id[i], files))
+               files <- unique(files[ix])               
+            }
          }
       }
    }

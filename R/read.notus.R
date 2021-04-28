@@ -13,7 +13,49 @@
 
 #' @export read.notus
 read.notus <- function(file){
-  x <- readLines(file) # Read each line separately:
+  # Define file(s) to be read:
+  if (!missing(x) & missing(file)) if (is.character(x)) file = x
+  if (missing(file)){
+    if (missing(x)) file <- locate.notus(...) else file <- locate.notus(x, ...)  
+  }
+  if (length(file) == 0) return(NULL)
+  
+  # Read multiple netmind files and concatenate them:
+  if (length(file) == 0) return(NULL)
+  if (length(file) > 1){
+    x <- vector(mode = "list", length = length(file))
+    k <- 0
+    for (i in 1:length(file)){
+      if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
+      x[i] <- list(expand(read.notus(file[i])))
+      k <- k + nrow(x[[i]])
+    }
+    
+    # Standardize data frame formats:
+    vars <- unique(unlist(lapply(x, names)))
+    for (i in 1:length(x)){
+      ix <- setdiff(vars, names(x[[i]]))
+      if (length(ix) > 0){
+        x[[i]][ix] <- ""
+        x[[i]] <- x[[i]][vars]
+      }
+    }
+    
+    # Efficiently catenate data frames:
+    while (length(x) >= 2){
+      ix <- seq(2, length(x), by = 2)
+      for (i in ix) x[i] <- list(rbind(x[[i-1]], x[[i]]))
+      if (i < length(x)) ix <- c(ix, length(x))
+      x <- x[ix]
+    }
+    x <- x[[1]]
+    
+    gulf.metadata::header(x) <- NULL
+    return(x)
+  }
+  
+  # Read single file, line-by-line:
+  x <- readLines(file) 
 
   # Parse variable field names:
   i <- min(grep("^Code", x))
@@ -27,6 +69,13 @@ read.notus <- function(file){
   date <- strsplit(date, "-")[[1]]
   date <- paste0(date[3:1], collapse = "-")
 
+  # Build transponder table:
+  ix <- grep("transponder", tolower(x))
+  tab <- data.frame(transponder = unlist(lapply(strsplit(x[ix], ": "), function(x) x[2])),
+                    location    = gsub(" ", ".", tolower(unlist(lapply(strsplit(x[ix+1], ": "), function(x) x[2])))),
+                    stringsAsFactors = FALSE)
+  
+  
   # Remove non-data lines:
   x <- x[grep("^[A-Z][0-9][0-9][A-Z]", x)]
 
@@ -39,7 +88,8 @@ read.notus <- function(file){
   }
   names(data) <- vars
   data$Date <- date
-  data <- cbind(data["Date"], data["Time"], data["Code"], data[setdiff(names(data), c("Date", "Time", "Code"))])
+  data$location <- tab$location[match(data$Code, tab$transponder)]
+  data <- cbind(data["Date"], data["Time"], data["Code"], data["location"], data[setdiff(names(data), c("location", "Date", "Time", "Code"))])
 
   # Convert factors to character strings:
   for (i in 1:ncol(data)) if (is.factor(data[, i])) data[, i] <- as.character(data[, i])
@@ -48,5 +98,12 @@ read.notus <- function(file){
   for (i in 2:ncol(data)) data[, i] <- gsub("-", "", data[, i])
   for (i in 2:ncol(data)) if (!all(is.na(data[, i]))) if (all(gsub("[.0-9/-]", "", data[, i]) == ""))  data[, i] <- as.numeric(data[, i])
 
+  names(data) <- tolower(names(data))
+  
+  # Format comments:
+  data$comment[is.na(data$comment)] <- ""
+  
+  v <- unique(data[c("date", "time")])
+  
   return(data)
 }

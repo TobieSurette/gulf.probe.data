@@ -144,9 +144,9 @@ read.minilog.default <- function(x, file, offset = 0, verbose = FALSE, ...){
 
    # Modify time by specified offset:
    if (offset != 0){
-      t <- time(v) +  offset * 60
-      v$date <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[1]))
-      v$time <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[2]))
+      t <- time(x) +  offset * 60
+      x$date <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[1]))
+      x$time <- unlist(lapply(strsplit(as.character(t), " "), function(x) x[2]))
    }
 
    # Convert to minilog object:

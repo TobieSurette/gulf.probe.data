@@ -149,10 +149,13 @@ header.star.oddi <- function(x, verbose = FALSE, ...){
 #' @export header.netmind
 header.netmind <- function(x, verbose = FALSE, ...){
    # Define file(s) to be read:
-   if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)){
-      if (missing(x)) file <- locate.netmind(...) else file <- locate.netmind(x, ...)  
-   }
+   if (!missing(x)){
+      file <- NULL
+      if (is.character(x)) file <- x 
+      if (is.numeric(x))   file <- locate.netmind(x, ...) 
+   }else{
+      file <- locate.netmind(...) 
+   } 
    if (length(file) == 0) return(NULL)
 
    # Read multiple Netmind files and concatenate them:
@@ -214,10 +217,13 @@ header.netmind <- function(x, verbose = FALSE, ...){
 #' @export header.esonar
 header.esonar <- function(x, verbose = FALSE, ...){
    # Define file(s) to be read:
-   if (!missing(x) & missing(file)) if (is.character(x)) file = x
-   if (missing(file)){
-      if (missing(x)) file <- locate.esonar(...) else file <- locate.esonar(x, ...)  
-   }
+   if (!missing(x)){
+      file <- NULL
+      if (is.character(x)) file <- x 
+      if (is.numeric(x))   file <- locate.esonar(x, ...) 
+   }else{
+      file <- locate.esonar(...) 
+   } 
    if (length(file) == 0) return(NULL)
 
    # Read multiple eSonar files and concatenate them:
@@ -268,5 +274,51 @@ header.esonar <- function(x, verbose = FALSE, ...){
 #' @describeIn header.probe Extract Notus file header information.
 #' @export header.notus
 header.notus <- function(x, verbose = FALSE, ...){
-   return(NULL)
+   # Define file(s) to be read:
+   if (!missing(x)){
+      file <- NULL
+      if (is.character(x)) file <- x 
+      if (is.numeric(x))   file <- locate.notus(x, ...) 
+   }else{
+      file <- locate.notus(...) 
+   } 
+   if (length(file) == 0) return(NULL)
+   
+   # Read multiple eSonar files and concatenate them:
+   if (length(file) == 0) return(NULL)
+   if (length(file) > 1){
+      for (i in 1:length(file)){
+         if (verbose) cat(paste(i, ") Reading: '", file[i], "'\n", sep = ""))
+         header <- header.notus(file[i])
+         header <- as.data.frame(t(header), stringsAsFactors = FALSE)
+         header["file.name"] <- unlist(lapply(strsplit(file[i], "/"), function(x) x[length(x)])[[1]])
+         if (i == 1){
+            x <- header
+         }else{
+            if (!all(names(header) %in% names(x))) x[setdiff(names(header), names(x))] <- ""
+            if (!all(names(x) %in% names(header))) header[setdiff(names(x), names(header))] <- ""
+            header <- header[names(x)]
+            x <- rbind(x, header)
+         } 
+      }
+      
+      rownames(x) <- NULL
+      
+      return(x)
+   }
+   
+   # Parse header for a single file:
+   x <- readLines(file, n = 25) 
+   
+   # Parse variable field names:
+   i <- min(grep("^Code", x))
+   x <- x[1:(i-1)]
+   x <- x[x != ""]
+   x <- x[-grep("NOTUS TEXTFILE", x)]
+
+   # Extract header information:
+   header <- unlist(lapply(strsplit(x, ": "), function(x) x[2]))
+   names(header) <- unlist(lapply(strsplit(x, ": "), function(x) x[1]))
+   
+   return(header)
 }
