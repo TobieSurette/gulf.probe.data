@@ -1,0 +1,100 @@
+* Sea-Bird SBE19plus Data File:
+* FileName = C:\Users\Temp\Desktop\CTD2016\STA116_20160729.hex
+* Software Version 1.59
+* Temperature SN =  7569
+* Conductivity SN =  7569
+* System UpLoad Time = Jul 29 2016 21:01:46
+** Ship: Jean Mathieu
+** Cruise: Snow Crab Survey 2016
+** Chief Scientist: Marcel Hebert
+** Area of Operation: Southern Gulf of St Lawrence
+** Organization:DFO
+** Station :GP123F
+** Cast:11
+** Latitude :46 49.548
+** Longitude :63 15.296
+** Sounding :49
+** STA116
+* ds
+* SBE 19plus V 2.5.2  SERIAL NO. 7569    30 Jul 2016 00:00:40
+* vbatt = 12.1, vlith =  8.4, ioper =  61.0 ma, ipump =  89.0 ma, 
+* iext01 =   5.6 ma, iext2345 =  12.4 ma
+* status = not logging
+* number of scans to average = 1
+* samples = 22315, free = 4364227, casts = 9
+* mode = profile, minimum cond freq = 3047, pump delay = 60 sec
+* autorun = no, ignore magnetic switch = no
+* battery type = alkaline, battery cutoff =  7.5 volts
+* pressure sensor = strain gauge, range = 870.0
+* SBE 38 = no, WETLABS = no, OPTODE = no, SBE63 = no, Gas Tension Device = no
+* Ext Volt 0 = yes, Ext Volt 1 = no
+* Ext Volt 2 = yes, Ext Volt 3 = no
+* Ext Volt 4 = no, Ext Volt 5 = no
+* echo characters = yes
+* output format = raw HEX
+
+* S>
+* 
+* SBE 19plus V 2.5.2  SERIAL NO. 7569    30 Jul 2016 00:00:51
+* temperature:  20-Jan-15
+*     TA0 = 1.275856e-03
+*     TA1 = 2.701572e-04
+*     TA2 = -7.527186e-07
+*     TA3 = 1.645771e-07
+*     TOFFSET = 0.000000e+00
+* conductivity:  20-Jan-15
+*     G = -9.790261e-01
+*     H = 1.511274e-01
+*     I = -1.794845e-04
+*     J = 3.600822e-05
+*     CPCOR = -9.570000e-08
+*     CTCOR = 3.250000e-06
+*     CSLOPE = 1.000000e+00
+* pressure S/N = 4337939, range = 870 psia:  15-Jan-15
+*     PA0 = 2.460553e+00
+*     PA1 = 3.186008e-03
+*     PA2 = 9.227172e-11
+*     PTCA0 = 5.254767e+05
+*     PTCA1 = 2.287001e+01
+*     PTCA2 = 5.958352e-01
+*     PTCB0 = 2.497575e+01
+*     PTCB1 = -5.000000e-05
+*     PTCB2 = 0.000000e+00
+*     PTEMPA0 = 1.350334e+02
+*     PTEMPA1 = -4.861942e+01
+*     PTEMPA2 = -1.335790e+00
+*     POFFSET = 0.000000e+00
+* volt 0: offset = -4.774210e-02, slope = 1.248448e+00
+* volt 1: offset = -4.621053e-02, slope = 1.248715e+00
+* volt 2: offset = -4.718210e-02, slope = 1.248013e+00
+* volt 3: offset = -4.689684e-02, slope = 1.248502e+00
+* volt 4: offset = -4.737579e-02, slope = 1.248591e+00
+* volt 5: offset = -4.691263e-02, slope = 1.247504e+00
+*     EXTFREQSF = 9.999923e-01
+* dh
+* cast   9 29 Jul 2016 22:42:50 samples 22294 to 22315, avg = 1, stop = low batt
+
+* S> 
+*END*
+04213B09F7E308156D7257979B8E98
+04213C09F80308156A7257979C8E9E
+04213B09F80C08156D7259979D8EA7
+04213E09F89608156E725C979B8EB8
+04213E09F88008156F725D979A8EB7
+04213A09F87908156C725E97BE8EBA
+04213909F87208156E726197B88EC0
+04213809F89208156C726397AB8EBE
+04213809F87F08156D726397A98EBA
+04213909F86F08156C726597AF8EC1
+04213A09F8A708156C726797BD8EBC
+04213C09F8B908156D726797AD8EC0
+04213F09F8BB08156B726897B78EBD
+04213E09F8BE08156B726A97C08EBF
+04213F09F8CB08156D726D97BD8EC0
+04214209F8C508156C726E97C08EC0
+04214309F8CB08156C7272979F8EC2
+04214509F8D008156D727397A98EBF
+04214909F90E08156D7273979F8EC0
+04216E09FA5508156D727300080449
+04225E0E632B0815DD727300040013
+042D2711C52608164F727300020012

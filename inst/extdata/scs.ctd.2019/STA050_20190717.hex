@@ -1,0 +1,83 @@
+* Sea-Bird SBE19plus Data File:
+* FileName = C:\Users\Temp\Desktop\CTD 2019\STA050_20190717.hex
+* Software Version 1.59
+* Temperature SN =  7569
+* Conductivity SN =  7569
+* System UpLoad Time = Jul 17 2019 20:50:53
+** Ship: Avelon Voyager
+** Cruise: Snow Crab Survey 2019
+** Chief Scientist: Marcel Hebert
+** Area of Operation: Area 12
+** Organization: DFO
+** Station :GP195F
+** Cast:3
+** Latitude :47 45.302
+** Longitude :62 34.766
+** Sounding :66
+** STA050
+** LOW BATT AT12.3???
+* ds
+* SBE 19plus V 2.5.2  SERIAL NO. 7569    17 Jul 2019 23:49:24
+* vbatt = 11.9, vlith =  7.9, ioper =  61.0 ma, ipump =  89.0 ma, 
+* iext01 =   5.7 ma, iext2345 =  12.4 ma
+* status = not logging
+* number of scans to average = 1
+* samples = 5191, free = 4381351, casts = 10
+* mode = profile, minimum cond freq = 3047, pump delay = 60 sec
+* autorun = no, ignore magnetic switch = no
+* battery type = alkaline, battery cutoff =  7.5 volts
+* pressure sensor = strain gauge, range = 870.0
+* SBE 38 = no, WETLABS = no, OPTODE = no, SBE63 = no, Gas Tension Device = no
+* Ext Volt 0 = yes, Ext Volt 1 = no
+* Ext Volt 2 = yes, Ext Volt 3 = no
+* Ext Volt 4 = no, Ext Volt 5 = no
+* echo characters = yes
+* output format = raw HEX
+
+* S>
+* 
+* SBE 19plus V 2.5.2  SERIAL NO. 7569    17 Jul 2019 23:49:37
+* temperature:  17-Nov-18
+*     TA0 = 1.275280e-03
+*     TA1 = 2.704142e-04
+*     TA2 = -7.902636e-07
+*     TA3 = 1.663816e-07
+*     TOFFSET = 0.000000e+00
+* conductivity:  17-Nov-18
+*     G = -9.789985e-01
+*     H = 1.509994e-01
+*     I = -1.233040e-04
+*     J = 3.214048e-05
+*     CPCOR = -9.570000e-08
+*     CTCOR = 3.250000e-06
+*     CSLOPE = 1.000000e+00
+* pressure S/N = 4337939, range = 870 psia:  14-Nov-18
+*     PA0 = 2.337795e+00
+*     PA1 = 3.192306e-03
+*     PA2 = 7.584757e-11
+*     PTCA0 = 5.251367e+05
+*     PTCA1 = 2.095776e+01
+*     PTCA2 = 5.807814e-01
+*     PTCB0 = 2.497575e+01
+*     PTCB1 = -5.000000e-05
+*     PTCB2 = 0.000000e+00
+*     PTEMPA0 = 1.423177e+02
+*     PTEMPA1 = -5.489891e+01
+*     PTEMPA2 = -7.200443e-03
+*     POFFSET = 0.000000e+00
+* volt 0: offset = -4.774210e-02, slope = 1.248448e+00
+* volt 1: offset = -4.621053e-02, slope = 1.248715e+00
+* volt 2: offset = -4.718210e-02, slope = 1.248013e+00
+* volt 3: offset = -4.689684e-02, slope = 1.248502e+00
+* volt 4: offset = -4.737579e-02, slope = 1.248591e+00
+* volt 5: offset = -4.691263e-02, slope = 1.247504e+00
+*     EXTFREQSF = 9.999923e-01
+* dh
+* cast   3 17 Jul 2019 11:57:23 samples 2136 to 2139, avg = 1, stop = low batt
+
+* S> 
+*END*
+04E48909FBE408142D771300070FB8
+04E48709FBEC08142D77100004001E
+04E48009FBF708142F770D0006001B
+04E46309FBDC08142F770A00040014
