@@ -1,0 +1,78 @@
+* Sea-Bird SBE19plus Data File:
+* FileName = C:\Users\snowc\Desktop\CTD2023\STA179_07082023.hex
+* Software Version 1.59
+* Temperature SN =  7669
+* Conductivity SN =  7669
+* System UpLoad Time = Aug 07 2023 20:21:28
+** Ship: Avalon Voyager II
+** Cruise: Snow Crab Survey 2023
+** Chief Scientist : Jean-Francois Landry
+** Area of Operaration : Southern Gulf of St Lawrence
+** Organisation: DFO
+** Station:GP002F
+** Cast:3
+** Latitude47 47.085
+** Longitude65 32.800
+** Sounding:40
+** STA179
+* ds
+* SBE 19plus V 2.5.2  SERIAL NO. 7669    07 Aug 2023 15:20:04
+* vbatt = 12.2, vlith =  8.1, ioper =  62.0 ma, ipump =  65.4 ma, 
+* iext01 =   5.5 ma, iext2345 =  12.2 ma
+* status = not logging
+* number of scans to average = 1
+* samples = 3967, free = 4382575, casts = 3
+* mode = profile, minimum cond freq = 3206, pump delay = 60 sec
+* autorun = no, ignore magnetic switch = no
+* battery type = alkaline, battery cutoff =  7.5 volts
+* pressure sensor = strain gauge, range = 870.0
+* SBE 38 = no, WETLABS = no, OPTODE = no, SBE63 = no, Gas Tension Device = no
+* Ext Volt 0 = yes, Ext Volt 1 = no
+* Ext Volt 2 = yes, Ext Volt 3 = no
+* Ext Volt 4 = no, Ext Volt 5 = no
+* echo characters = yes
+* output format = raw HEX
+
+* S>
+* 
+* SBE 19plus V 2.5.2  SERIAL NO. 7669    07 Aug 2023 15:20:27
+* temperature:  09-Nov-22
+*     TA0 = 1.285265e-03
+*     TA1 = 2.693393e-04
+*     TA2 = -1.010317e-06
+*     TA3 = 1.709799e-07
+*     TOFFSET = 0.000000e+00
+* conductivity:  09-Nov-22
+*     G = -9.979087e-01
+*     H = 1.364719e-01
+*     I = -1.473588e-04
+*     J = 2.941426e-05
+*     CPCOR = -9.570000e-08
+*     CTCOR = 3.250000e-06
+*     CSLOPE = 1.000000e+00
+* pressure S/N = 4415747, range = 870 psia:  04-Nov-22
+*     PA0 = 3.582467e+00
+*     PA1 = 3.167899e-03
+*     PA2 = 9.564866e-11
+*     PTCA0 = 5.272627e+05
+*     PTCA1 = 3.772592e+01
+*     PTCA2 = 7.889033e-01
+*     PTCB0 = 2.490025e+01
+*     PTCB1 = 5.000000e-05
+*     PTCB2 = 0.000000e+00
+*     PTEMPA0 = 1.707163e+02
+*     PTEMPA1 = -5.388747e+01
+*     PTEMPA2 = -1.615488e+00
+*     POFFSET = 0.000000e+00
+* volt 0: offset = -4.768947e-02, slope = 1.249048e+00
+* volt 1: offset = -4.686421e-02, slope = 1.249086e+00
+* volt 2: offset = -4.774210e-02, slope = 1.248550e+00
+* volt 3: offset = -4.781895e-02, slope = 1.248965e+00
+* volt 4: offset = -4.799053e-02, slope = 1.248821e+00
+* volt 5: offset = -4.824842e-02, slope = 1.249255e+00
+*     EXTFREQSF = 9.999904e-01
+* dh
+* cast   3 07 Aug 2023 14:32:51 samples 2815 to 3967, avg = 1, stop = mag switch
+
+* S> 
+*END*
