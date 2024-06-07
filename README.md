@@ -8,6 +8,7 @@ Data sets are store in the `inst/extdata` directory. Data files are seperated by
 
 Directory            | Description
 -------------------- | --------------------------------------------------
+`scs.ctd.XXXX`       | Snow crab survey CTD probe data.
 `scs.minilog.XXXX`   | Snow crab survey Minilog probe data. 
 `scs.star.oddi.XXXX` | Snow crab survey Star Oddi probe data. 
 `scs.scanmar.XXXX`   | Snow crab survey Scanmar acoustic monitoring probe data. 
